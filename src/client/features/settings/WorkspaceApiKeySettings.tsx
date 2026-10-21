@@ -36,6 +36,11 @@ function ExternalLink({ href, children }: { href: string; children: string }) {
   );
 }
 
+// This fork's DataForSEO referral link for workspaces that still need an
+// account.
+const DATAFORSEO_SIGNUP_URL =
+  "https://dataforseo.com/?aff=77e3a2e4-c378-4786-86b1-205354a4d9bd";
+
 const PROVIDERS: Record<
   WorkspaceApiKeyProvider,
   {
@@ -54,6 +59,13 @@ const PROVIDERS: Record<
     connected: (label) => `Connected as ${label}`,
     description: (
       <>
+        <span className="block">
+          No DataForSEO account yet?{" "}
+          <ExternalLink href={DATAFORSEO_SIGNUP_URL}>
+            Sign up and add funds at DataForSEO
+          </ExternalLink>
+          , then come back and add your key.
+        </span>
         Copy the Base64 credentials from{" "}
         <ExternalLink href="https://app.dataforseo.com/api-access">
           DataForSEO API Access

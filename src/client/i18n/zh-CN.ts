@@ -2043,6 +2043,9 @@ export const messages: Record<string, string> = {
     "此工作区的 SEO 数据来自你自己的 DataForSEO 账户，费用由 DataForSEO 向该账户收取。",
   "No key yet. Research, rank tracking, and audits need one.":
     "尚未添加密钥。研究、排名追踪和审计都需要它。",
+  "No DataForSEO account yet?": "还没有 DataForSEO 账户？请先",
+  "Sign up and add funds at DataForSEO": "注册 DataForSEO 并充值",
+  ", then come back and add your key.": "，然后回到这里填写密钥。",
   "Copy the Base64 credentials from": "从以下位置复制 Base64 凭据：",
   "DataForSEO API Access": "DataForSEO API 访问",
   ", or enter your login and API password as login:password.":
