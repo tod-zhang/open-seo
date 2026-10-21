@@ -31,7 +31,7 @@ const MISSING_KEY = {
   openrouter: {
     code: "OPENROUTER_KEY_REQUIRED",
     message:
-      "No OpenRouter API key is saved for this workspace. Add one in OpenSEO Settings to use AI features.",
+      "No DeepSeek API key is saved for this workspace. Add one in OpenSEO Settings to use AI features.",
   },
 } as const;
 
@@ -93,14 +93,15 @@ async function checkKey(
     }
   }
 
-  const response = await fetch("https://openrouter.ai/api/v1/key", {
+  // The "openrouter" slot holds a DeepSeek key in this fork (see openrouter.ts).
+  const response = await fetch("https://api.deepseek.com/user/balance", {
     headers: { Authorization: `Bearer ${apiKey}` },
     signal: AbortSignal.timeout(10_000),
   });
   if (response.status === 401 || response.status === 403) {
     return {
       problem:
-        "OpenRouter rejected this key. Create a key at openrouter.ai/settings/keys and paste it here.",
+        "DeepSeek rejected this key. Create a key at platform.deepseek.com/api_keys and paste it here.",
     };
   }
   if (!response.ok) throw new AppError("UPSTREAM_UNAVAILABLE");

@@ -35,8 +35,11 @@ export function openRouterCostUsd(providerMetadata: unknown): number {
   return parsed.success ? parsed.data.openrouter.usage.cost : 0;
 }
 
+// This fork calls DeepSeek, which reports no USD cost. That's fine in BYOK mode,
+// where nothing is metered and the workspace pays DeepSeek directly, so a
+// missing cost counts as zero rather than failing the research.
 export function requireOpenRouterCostUsd(providerMetadata: unknown): number {
-  return openRouterUsageSchema.parse(providerMetadata).openrouter.usage.cost;
+  return openRouterCostUsd(providerMetadata);
 }
 
 // The provider package re-exports only LanguageModelV3 itself, so the stream

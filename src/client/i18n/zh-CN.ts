@@ -1848,18 +1848,18 @@ export const messages: Record<string, string> = {
   "Lost the connection to SAM.": "与 SAM 的连接已断开。",
   "Reconnecting…": "正在重新连接…",
   "Enable AI Features": "启用 AI 功能",
-  "SAM, OpenSEO's in-app AI agent, runs on your own OpenRouter API key. Create a key on OpenRouter, add it in":
-    "SAM 是 OpenSEO 的内置 AI 助手，使用你自己的 OpenRouter API 密钥运行。请在 OpenRouter 上创建密钥，添加到",
+  "SAM, OpenSEO's in-app AI agent, runs on your own DeepSeek API key. Create a key on DeepSeek, add it in":
+    "SAM 是 OpenSEO 的内置 AI 助手，使用你自己的 DeepSeek API 密钥运行。请在 DeepSeek 上创建密钥，添加到",
   ", then confirm here.": "，然后在这里确认。",
-  "SAM, OpenSEO's in-app AI agent, needs an OpenRouter API key. Create a key on OpenRouter, set it as the":
-    "SAM 是 OpenSEO 的内置 AI 助手，需要 OpenRouter API 密钥。请在 OpenRouter 上创建密钥，并设置为",
+  "SAM, OpenSEO's in-app AI agent, needs a DeepSeek API key. Create a key on DeepSeek, set it as the":
+    "SAM 是 OpenSEO 的内置 AI 助手，需要 DeepSeek API 密钥。请在 DeepSeek 上创建密钥，并设置为",
   "environment variable, restart OpenSEO, then confirm here.":
     "环境变量，重启 OpenSEO，然后在这里确认。",
   "Step-by-step instructions for every deployment are in the":
     "各种部署方式的分步说明见",
-  "OpenRouter API key setup guide": "OpenRouter API 密钥配置指南",
+  "DeepSeek API key setup guide": "DeepSeek API 密钥配置指南",
   "Confirm API Key": "确认 API 密钥",
-  "Open OpenRouter Keys": "打开 OpenRouter 密钥页",
+  "Open DeepSeek Keys": "打开 DeepSeek 密钥页",
   Beta: "测试版",
   "For more powerful AI workflows, use the OpenSEO MCP with your own agent like Claude Code or Hermes.":
     "如需更强大的 AI 工作流，请在你自己的 AI 助手（如 Claude Code 或 Hermes）中使用 OpenSEO MCP。",
@@ -2049,9 +2049,9 @@ export const messages: Record<string, string> = {
     "，或以 login:password 格式输入你的登录名和 API 密码。",
   "Research, scheduled rank checks, and AI visibility checks stop until a new key is saved.":
     "在保存新密钥之前，研究、定时排名检查和 AI 可见度检查都会停止。",
-  "OpenRouter API key": "OpenRouter API 密钥",
-  "SAM and the AI prompt features run on your own OpenRouter account, and OpenRouter bills it there.":
-    "SAM 和 AI 提示词功能使用你自己的 OpenRouter 账户运行，费用由 OpenRouter 向该账户收取。",
+  "DeepSeek API key": "DeepSeek API 密钥",
+  "SAM and the AI prompt features run on your own DeepSeek account, and DeepSeek bills it there.":
+    "SAM 和 AI 提示词功能使用你自己的 DeepSeek 账户运行，费用由 DeepSeek 向该账户收取。",
   "No key yet. SAM and AI prompt suggestions need one.":
     "尚未添加密钥。SAM 和 AI 提示词推荐需要它。",
   "Create a key on": "在以下平台创建密钥：",
@@ -2151,8 +2151,8 @@ export const messages: Record<string, string> = {
     "DataForSEO 拒绝了 API 密钥。请确认 DATAFORSEO_API_KEY 是你 DataForSEO login:password 的 base64 编码。",
   "Add your DataForSEO API key in Settings to use this feature.":
     "请在设置中添加 DataForSEO API 密钥以使用此功能。",
-  "Add your OpenRouter API key in Settings to use AI features.":
-    "请在设置中添加 OpenRouter API 密钥以使用 AI 功能。",
+  "Add your DeepSeek API key in Settings to use AI features.":
+    "请在设置中添加 DeepSeek API 密钥以使用 AI 功能。",
   "Too many requests. Please wait and try again.": "请求过于频繁，请稍后重试。",
   "The data provider is temporarily unavailable. Please retry in a moment.":
     "数据提供方暂时不可用，请稍后重试。",
@@ -2334,13 +2334,13 @@ export const messages: Record<string, string> = {
     "粘贴上面终端命令输出的 base64 值并保存。",
   "Use the base64 value of": "使用以下内容的 base64 值：",
   "when prompted.": "（在提示时输入）。",
-  "Set up your OpenRouter API key": "配置你的 OpenRouter API 密钥",
+  "Set up your DeepSeek API key": "配置你的 DeepSeek API 密钥",
   "secret before AI features like SAM, the in-app SEO agent, can run. It is optional — everything else in OpenSEO works without it.":
     "机密，才能运行 SAM（内置 SEO 助手）等 AI 功能。这是可选的，OpenSEO 的其他功能无需它也能使用。",
   "Create an account at": "注册账户：",
   "and add credits (pay-as-you-go, like DataForSEO).":
     "，并充值额度（与 DataForSEO 一样按量付费）。",
-  "OpenRouter API Keys": "OpenRouter API 密钥",
+  "DeepSeek API Keys": "DeepSeek API 密钥",
   'and click "Create API Key".': "，然后点击 “Create API Key”。",
   "Save the key as the": "将密钥保存为",
   "secret in your environment:": "机密（在你的环境中）：",
@@ -2349,10 +2349,9 @@ export const messages: Record<string, string> = {
     "Cloudflare：在 Workers 界面中设置（见下文）",
   "Local development:": "本地开发：",
   "Restart OpenSEO.": "重启 OpenSEO。",
-  "Paste your OpenRouter API key and save.":
-    "粘贴你的 OpenRouter API 密钥并保存。",
-  "Paste your OpenRouter API key when prompted.":
-    "在提示时粘贴你的 OpenRouter API 密钥。",
+  "Paste your DeepSeek API key and save.": "粘贴你的 DeepSeek API 密钥并保存。",
+  "Paste your DeepSeek API key when prompted.":
+    "在提示时粘贴你的 DeepSeek API 密钥。",
   "Redirecting you to billing so you can start a hosted subscription.":
     "正在跳转到账单页面，以便你开始托管订阅。",
   "Questions about your market": "关于你所在市场的问题",

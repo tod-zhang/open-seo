@@ -18,7 +18,7 @@ type SamAccessStatus = {
   errorMessage: string | null;
 };
 
-// Gates the in-app AI agent (SAM) on an OpenRouter key being configured, the
+// Gates the in-app AI agent (SAM) on a DeepSeek key being configured, the
 // same way backlinks/AI-search gate on their DataForSEO subscriptions. Hosted
 // deployments always have the key provisioned, so only self-hosted is checked.
 export const getSamAccessSetupStatus = createServerFn({ method: "GET" })
@@ -38,7 +38,7 @@ export const getSamAccessSetupStatus = createServerFn({ method: "GET" })
         enabled,
         errorMessage: enabled
           ? null
-          : "No OpenRouter API key is saved for this workspace yet. Add one in Settings, then confirm here.",
+          : "No DeepSeek API key is saved for this workspace yet. Add one in Settings, then confirm here.",
       };
     }
 

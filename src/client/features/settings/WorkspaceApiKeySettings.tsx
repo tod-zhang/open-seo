@@ -65,15 +65,15 @@ const PROVIDERS: Record<
       "Research, scheduled rank checks, and AI visibility checks stop until a new key is saved.",
   },
   openrouter: {
-    title: "OpenRouter API key",
-    hint: "SAM and the AI prompt features run on your own OpenRouter account, and OpenRouter bills it there.",
+    title: "DeepSeek API key",
+    hint: "SAM and the AI prompt features run on your own DeepSeek account, and DeepSeek bills it there.",
     missing: "No key yet. SAM and AI prompt suggestions need one.",
     connected: (label) => `Key ending ${label.replace("…", "")}`,
     description: (
       <>
         Create a key on{" "}
-        <ExternalLink href="https://openrouter.ai/settings/keys">
-          OpenRouter
+        <ExternalLink href="https://platform.deepseek.com/api_keys">
+          DeepSeek
         </ExternalLink>{" "}
         and paste it here.
       </>

@@ -22,8 +22,8 @@ export function SamSetupGate({
       description={
         isByokClientMode() ? (
           <p>
-            SAM, OpenSEO&apos;s in-app AI agent, runs on your own OpenRouter API
-            key. Create a key on OpenRouter, add it in{" "}
+            SAM, OpenSEO&apos;s in-app AI agent, runs on your own DeepSeek API
+            key. Create a key on DeepSeek, add it in{" "}
             <Link
               className="underline underline-offset-2 hover:text-foreground"
               to="/settings"
@@ -35,8 +35,8 @@ export function SamSetupGate({
         ) : (
           <>
             <p>
-              SAM, OpenSEO&apos;s in-app AI agent, needs an OpenRouter API key.
-              Create a key on OpenRouter, set it as the{" "}
+              SAM, OpenSEO&apos;s in-app AI agent, needs a DeepSeek API key.
+              Create a key on DeepSeek, set it as the{" "}
               <code>OPENROUTER_API_KEY</code> environment variable, restart
               OpenSEO, then confirm here.
             </p>
@@ -46,7 +46,7 @@ export function SamSetupGate({
                 className="underline underline-offset-2 hover:text-foreground"
                 to="/help/openrouter-api-key"
               >
-                OpenRouter API key setup guide
+                DeepSeek API key setup guide
               </Link>
               .
             </p>
@@ -64,13 +64,13 @@ export function SamSetupGate({
             nativeButton={false}
             render={
               <a
-                href="https://openrouter.ai/settings/keys"
+                href="https://platform.deepseek.com/api_keys"
                 target="_blank"
                 rel="noreferrer"
               />
             }
           >
-            Open OpenRouter Keys
+            Open DeepSeek Keys
           </Button>
         </>
       }

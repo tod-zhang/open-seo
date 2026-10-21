@@ -4,7 +4,7 @@ import {
   SecretHelpPage,
 } from "@/client/features/help/SecretHelpPage";
 
-const OPENROUTER_KEYS_URL = "https://openrouter.ai/settings/keys";
+const OPENROUTER_KEYS_URL = "https://platform.deepseek.com/api_keys";
 
 export const Route = createFileRoute("/_app/help/openrouter-api-key")({
   component: OpenrouterApiKeyHelpPage,
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_app/help/openrouter-api-key")({
 function OpenrouterApiKeyHelpPage() {
   return (
     <SecretHelpPage
-      title="Set up your OpenRouter API key"
+      title="Set up your DeepSeek API key"
       intro={
         <>
           OpenSEO needs the <code>OPENROUTER_API_KEY</code> secret before AI
@@ -28,11 +28,11 @@ function OpenrouterApiKeyHelpPage() {
             Create an account at{" "}
             <a
               className={helpLinkClassName}
-              href="https://openrouter.ai"
+              href="https://platform.deepseek.com"
               target="_blank"
               rel="noreferrer"
             >
-              openrouter.ai
+              platform.deepseek.com
             </a>{" "}
             and add credits (pay-as-you-go, like DataForSEO).
           </li>
@@ -44,7 +44,7 @@ function OpenrouterApiKeyHelpPage() {
               target="_blank"
               rel="noreferrer"
             >
-              OpenRouter API Keys
+              DeepSeek API Keys
             </a>{" "}
             and click "Create API Key".
           </li>
@@ -64,8 +64,8 @@ function OpenrouterApiKeyHelpPage() {
           <li>Restart OpenSEO.</li>
         </>
       }
-      dashboardPasteStep="Paste your OpenRouter API key and save."
-      terminalPromptHint="Paste your OpenRouter API key when prompted."
+      dashboardPasteStep="Paste your DeepSeek API key and save."
+      terminalPromptHint="Paste your DeepSeek API key when prompted."
     />
   );
 }
