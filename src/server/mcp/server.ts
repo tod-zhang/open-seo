@@ -95,6 +95,7 @@ import {
 } from "@/server/mcp/tools/report-template-tools";
 import { researchKeywordsTool } from "@/server/mcp/tools/research-keywords";
 import { saveKeywordsTool } from "@/server/mcp/tools/save-keywords";
+import { isGoogleDataEnabled } from "@/lib/byok";
 import {
   getSearchConsolePerformanceTool,
   inspectUrlsTool,
@@ -238,7 +239,7 @@ export function createOpenSeoMcpServer(
   if (supportsApps) {
     registerWidgetResource(server);
     register(showSerpResultsTool);
-    register(showSearchConsolePerformanceTool);
+    if (isGoogleDataEnabled()) register(showSearchConsolePerformanceTool);
   }
 
   register(whoamiTool);
@@ -291,19 +292,22 @@ export function createOpenSeoMcpServer(
   register(listBusinessCategoriesTool);
   register(getLocalRankGridTool);
   register(getKeywordMetricsTool);
-  register(getSearchConsolePerformanceTool);
-  register(inspectUrlsTool);
   register(submitIndexNowUrlsTool);
-  register(getGoogleAnalyticsOrganicLandingPagesTool);
-  register(getGoogleAnalyticsPagePerformanceTool);
-  register(getGoogleAnalyticsKeyEventsTool);
-  register(getSearchOpportunitiesTool);
-  register(getGoogleAnalyticsOrganicOverviewTool);
-  register(getGoogleAnalyticsTrafficAcquisitionTool);
-  register(getGoogleAnalyticsMeasurementHealthTool);
-  register(getGoogleAnalyticsEcommercePerformanceTool);
-  register(getGoogleAnalyticsSiteSearchTool);
-  register(getGoogleAnalyticsAudienceBreakdownTool);
+  // Search Console and GA4 tools, off where Google data is (BYOK).
+  if (isGoogleDataEnabled()) {
+    register(getSearchConsolePerformanceTool);
+    register(inspectUrlsTool);
+    register(getSearchOpportunitiesTool);
+    register(getGoogleAnalyticsOrganicLandingPagesTool);
+    register(getGoogleAnalyticsPagePerformanceTool);
+    register(getGoogleAnalyticsKeyEventsTool);
+    register(getGoogleAnalyticsOrganicOverviewTool);
+    register(getGoogleAnalyticsTrafficAcquisitionTool);
+    register(getGoogleAnalyticsMeasurementHealthTool);
+    register(getGoogleAnalyticsEcommercePerformanceTool);
+    register(getGoogleAnalyticsSiteSearchTool);
+    register(getGoogleAnalyticsAudienceBreakdownTool);
+  }
   register(runSiteAuditTool);
   register(listSiteAuditsTool);
   register(deleteSiteAuditTool);

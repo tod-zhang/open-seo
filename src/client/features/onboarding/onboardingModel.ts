@@ -5,9 +5,10 @@ import { getOnboardingAnswers } from "@/serverFunctions/onboarding";
 // Keep website and search_console first: Google's OAuth return lands on the
 // Search Console step by its index in the URL. Agent setup is last so leaving
 // to paste the prompt into an agent doesn't skip a step. BYOK deployments have
-// no usage analytics or product-update emails, so they skip that step.
+// no usage analytics, product-update emails or Google data integrations, so
+// they skip those steps.
 export const ONBOARDING_STEPS = isByokClientMode()
-  ? (["website", "search_console", "agent_setup"] as const)
+  ? (["website", "agent_setup"] as const)
   : (["website", "search_console", "analytics", "agent_setup"] as const);
 export const ONBOARDING_LAST_STEP = ONBOARDING_STEPS.length - 1;
 

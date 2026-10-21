@@ -72,6 +72,7 @@ import {
 } from "@/server/mcp/tools/local-seo-tools";
 import { researchKeywordsTool } from "@/server/mcp/tools/research-keywords";
 import { saveKeywordsTool } from "@/server/mcp/tools/save-keywords";
+import { isGoogleDataEnabled } from "@/lib/byok";
 import {
   getSearchConsolePerformanceTool,
   inspectUrlsTool,
@@ -431,38 +432,43 @@ export function buildSamMcpTools(
     list_business_categories: adaptTool(listBusinessCategoriesTool),
     get_local_rank_grid: adaptTool(getLocalRankGridTool),
     get_keyword_metrics: adaptTool(getKeywordMetricsTool),
-    get_search_console_performance: adaptTool(getSearchConsolePerformanceTool),
-    inspect_urls: adaptTool(inspectUrlsTool),
-    // Unconditional like the MCP server's registrations — the GA4 launch gate
-    // was removed in #505.
-    get_google_analytics_organic_landing_pages: adaptObjectTool(
-      getGoogleAnalyticsOrganicLandingPagesTool,
-    ),
-    get_google_analytics_page_performance: adaptObjectTool(
-      getGoogleAnalyticsPagePerformanceTool,
-    ),
-    get_google_analytics_key_events: adaptObjectTool(
-      getGoogleAnalyticsKeyEventsTool,
-    ),
-    get_search_opportunities: adaptObjectTool(getSearchOpportunitiesTool),
-    get_google_analytics_organic_overview: adaptObjectTool(
-      getGoogleAnalyticsOrganicOverviewTool,
-    ),
-    get_google_analytics_traffic_acquisition: adaptObjectTool(
-      getGoogleAnalyticsTrafficAcquisitionTool,
-    ),
-    get_google_analytics_measurement_health: adaptObjectTool(
-      getGoogleAnalyticsMeasurementHealthTool,
-    ),
-    get_google_analytics_ecommerce_performance: adaptObjectTool(
-      getGoogleAnalyticsEcommercePerformanceTool,
-    ),
-    get_google_analytics_site_search: adaptObjectTool(
-      getGoogleAnalyticsSiteSearchTool,
-    ),
-    get_google_analytics_audience_breakdown: adaptObjectTool(
-      getGoogleAnalyticsAudienceBreakdownTool,
-    ),
+    // Search Console and GA4 tools, off where Google data is (BYOK).
+    ...(isGoogleDataEnabled()
+      ? {
+          get_search_console_performance: adaptTool(
+            getSearchConsolePerformanceTool,
+          ),
+          inspect_urls: adaptTool(inspectUrlsTool),
+          get_google_analytics_organic_landing_pages: adaptObjectTool(
+            getGoogleAnalyticsOrganicLandingPagesTool,
+          ),
+          get_google_analytics_page_performance: adaptObjectTool(
+            getGoogleAnalyticsPagePerformanceTool,
+          ),
+          get_google_analytics_key_events: adaptObjectTool(
+            getGoogleAnalyticsKeyEventsTool,
+          ),
+          get_search_opportunities: adaptObjectTool(getSearchOpportunitiesTool),
+          get_google_analytics_organic_overview: adaptObjectTool(
+            getGoogleAnalyticsOrganicOverviewTool,
+          ),
+          get_google_analytics_traffic_acquisition: adaptObjectTool(
+            getGoogleAnalyticsTrafficAcquisitionTool,
+          ),
+          get_google_analytics_measurement_health: adaptObjectTool(
+            getGoogleAnalyticsMeasurementHealthTool,
+          ),
+          get_google_analytics_ecommerce_performance: adaptObjectTool(
+            getGoogleAnalyticsEcommercePerformanceTool,
+          ),
+          get_google_analytics_site_search: adaptObjectTool(
+            getGoogleAnalyticsSiteSearchTool,
+          ),
+          get_google_analytics_audience_breakdown: adaptObjectTool(
+            getGoogleAnalyticsAudienceBreakdownTool,
+          ),
+        }
+      : {}),
     run_site_audit: adaptTool(runSiteAuditTool),
     get_audit_status: waitingAuditStatusTool(adaptTool),
     get_audit_issues: adaptTool(getAuditIssuesTool),

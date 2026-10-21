@@ -18,6 +18,16 @@ export function isByokClientMode() {
   return isHostedClientAuthMode() && import.meta.env.DATAFORSEO_BYOK === "true";
 }
 
+/**
+ * Search Console and Google Analytics need Google's sensitive read scopes,
+ * which a free BYOK deployment doesn't get verified for, so BYOK turns them
+ * off along with every screen and tool that reads them.
+ */
+export function isGoogleDataEnabled() {
+  // Build-time like isByokClientMode, so the server bundle reads it too.
+  return !isByokClientMode();
+}
+
 /** The client half of isHostedBillingEnabled: hosted, and not BYOK. */
 export function isHostedBillingClientMode() {
   return isHostedClientAuthMode() && !isByokClientMode();

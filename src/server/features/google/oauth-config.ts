@@ -1,3 +1,4 @@
+import { isByokServerMode } from "@/server/lib/byok-mode";
 import { getOptionalEnvValue } from "@/server/lib/runtime-env";
 import { MIN_BETTER_AUTH_SECRET_LENGTH } from "@/shared/selfhost-checks";
 
@@ -15,10 +16,12 @@ export async function getGoogleOAuthClientConfig(): Promise<GoogleOAuthClientCon
 }
 
 /** Search Console and Analytics need a Google OAuth client plus the secret
- *  that encrypts stored tokens. Hosted deployments always have both. */
+ *  that encrypts stored tokens. Hosted deployments always have both. BYOK
+ *  deployments turn both integrations off (see isGoogleDataEnabled). */
 export async function hasGoogleOAuthConfig(
   config?: GoogleOAuthClientConfig | null,
 ): Promise<boolean> {
+  if (await isByokServerMode()) return false;
   const oauthConfig =
     config === undefined ? await getGoogleOAuthClientConfig() : config;
   if (!oauthConfig) return false;
