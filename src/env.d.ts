@@ -71,6 +71,11 @@ declare namespace Cloudflare {
 
     // DataForSEO API Basic auth value (base64 of login:password)
     DATAFORSEO_API_KEY: string;
+    // "true" makes a hosted deployment bring-your-own-key: each workspace
+    // saves its own DataForSEO key and Autumn billing is off (src/lib/byok.ts).
+    DATAFORSEO_BYOK?: string;
+    // Encrypts the API keys workspaces save in BYOK mode.
+    WORKSPACE_KEY_SECRET?: string;
     AI_VISIBILITY_WORKFLOW: Workflow<
       (
         | { runId: string }
@@ -96,6 +101,7 @@ interface ImportMetaEnv {
   readonly AUTH_MODE?: "cloudflare_access" | "local_noauth" | "hosted";
   readonly DATABASE_PROVIDER?: "d1" | "postgres";
   readonly BYPASS_EMAIL_VERIFICATION?: string;
+  readonly DATAFORSEO_BYOK?: string;
   readonly POSTHOG_PUBLIC_KEY?: string;
   readonly POSTHOG_HOST?: string;
   readonly TURNSTILE_SITE_KEY?: string;

@@ -1,3 +1,4 @@
+import { withOrganizationDataforseoKey } from "@/server/lib/dataforseo/api-key-scope";
 import type { WorkflowStep } from "cloudflare:workers";
 import { RankTrackingRepository } from "@/server/features/rank-tracking/repositories/RankTrackingRepository";
 import {
@@ -51,6 +52,7 @@ export interface CheckContext {
   languageCode: string;
   locationName?: string;
   runId: string;
+  organizationId: string;
 }
 
 /** Expand keywords into one task input per keyword/device pair. */
@@ -222,15 +224,21 @@ async function fetchQueuedRound(
 
   for (let i = 0; i < tasks.length; i += TASK_GET_CONCURRENCY) {
     const chunk = tasks.slice(i, i + TASK_GET_CONCURRENCY);
-    const settled = await Promise.allSettled(
-      chunk.map((task) =>
-        fetchRankCheckTaskResult({
-          taskId: task.taskId,
-          keywordId: task.keywordId,
-          keyword: task.keyword,
-          targetDomain: ctx.domain,
-        }),
-      ),
+    // task_get runs outside the metered client, so it opens the workspace's
+    // key scope itself (BYOK).
+    const settled = await withOrganizationDataforseoKey(
+      ctx.organizationId,
+      () =>
+        Promise.allSettled(
+          chunk.map((task) =>
+            fetchRankCheckTaskResult({
+              taskId: task.taskId,
+              keywordId: task.keywordId,
+              keyword: task.keyword,
+              targetDomain: ctx.domain,
+            }),
+          ),
+        ),
     );
     settled.forEach((result, index) => {
       const task = chunk[index];

@@ -1,5 +1,7 @@
 import { AppError } from "@/server/lib/errors";
 import { getRequiredEnvValue } from "@/server/lib/runtime-env";
+import { isByokServerMode } from "@/server/lib/byok-mode";
+import { getScopedDataforseoApiKey } from "@/server/lib/dataforseo/api-key-scope";
 import type { ErrorCode } from "@/shared/error-codes";
 // No runtime cycle: envelope.ts imports only the DataforseoErrorClassifier
 // type from here.
@@ -56,6 +58,20 @@ function formatDataforseoRequestPath(url: RequestInfo): string {
   }
 }
 
+// A BYOK deployment must never fall back to the operator's key: a call with no
+// workspace key in scope would otherwise bill the operator's account.
+async function resolveDataforseoApiKey(): Promise<string> {
+  const scoped = getScopedDataforseoApiKey();
+  if (scoped) return await scoped;
+  if (await isByokServerMode()) {
+    throw new AppError(
+      "DATAFORSEO_KEY_REQUIRED",
+      "No DataForSEO API key is saved for this workspace. Add one in OpenSEO Settings.",
+    );
+  }
+  return getRequiredEnvValue("DATAFORSEO_API_KEY");
+}
+
 /**
  * The single authenticated `fetch` used by every DataForSEO call. Throws on
  * non-2xx; task-level failures (which return HTTP 200) are handled downstream
@@ -67,7 +83,7 @@ function createAuthenticatedFetch(
   maxServerErrorRetries = DATAFORSEO_MAX_RETRIES,
 ) {
   return async (url: RequestInfo, init?: RequestInit): Promise<Response> => {
-    const apiKey = await getRequiredEnvValue("DATAFORSEO_API_KEY");
+    const apiKey = await resolveDataforseoApiKey();
     const headers = new Headers(init?.headers);
     headers.set("Authorization", `Basic ${apiKey}`);
     // Resolve the signal once so retries share the overall request timeout

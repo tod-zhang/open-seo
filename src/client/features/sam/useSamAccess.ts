@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getStandardErrorMessage } from "@/client/lib/error-messages";
-import { isHostedClientAuthMode } from "@/lib/auth-mode";
+import { isHostedBillingClientMode } from "@/lib/byok";
 import { getSamAccessSetupStatus } from "@/serverFunctions/samAccess";
 
 // Fails closed: the chat only renders once the check confirms the OpenRouter
@@ -24,7 +24,7 @@ type SamAccess =
 export function useSamAccess(projectId: string): SamAccess {
   // Hosted deployments always have OPENROUTER_API_KEY provisioned (the server
   // function short-circuits to enabled), so skip the round-trip entirely.
-  const isHosted = isHostedClientAuthMode();
+  const isHosted = isHostedBillingClientMode();
 
   const { data, error, isFetching, isRefetching, refetch } = useQuery({
     queryKey: ["samAccessStatus", projectId],

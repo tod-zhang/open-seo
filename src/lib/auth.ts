@@ -13,6 +13,7 @@ import { getDatabaseProvider } from "@/db/provider";
 import { z } from "zod";
 import { CURRENT_TERMS_VERSION } from "@/shared/terms";
 import { isHostedAuthMode } from "@/lib/auth-mode";
+import { isByokMode } from "@/lib/byok";
 import { createApiKeyPlugin } from "@/lib/auth-api-key";
 import { createBaseAuthConfig } from "@/lib/auth-config";
 import {
@@ -57,6 +58,8 @@ function createAuth() {
     ? getHostedBaseUrl()
     : "http://localhost";
   const bypassEmail = Reflect.get(env, "BYPASS_EMAIL_VERIFICATION") === "true";
+  // BYOK deployments sign in with Google only, so they need no email provider.
+  const googleOnly = isByokMode(env.AUTH_MODE, env.DATAFORSEO_BYOK);
   const baseAuthConfig = createBaseAuthConfig(
     isHostedAuthMode(env.AUTH_MODE)
       ? {
@@ -172,6 +175,7 @@ function createAuth() {
     ...baseAuthConfig,
     emailAndPassword: {
       ...baseAuthConfig.emailAndPassword,
+      enabled: !googleOnly,
       requireEmailVerification: !bypassEmail,
       resetPasswordTokenExpiresIn: 60 * 60,
       revokeSessionsOnPasswordReset: true,
@@ -182,18 +186,19 @@ function createAuth() {
         });
       },
     },
-    emailVerification: bypassEmail
-      ? undefined
-      : {
-          sendOnSignUp: true,
-          autoSignInAfterVerification: true,
-          sendVerificationEmail: async ({ user, url }) => {
-            await sendHostedVerificationEmail({
-              email: user.email,
-              confirmationUrl: url,
-            });
+    emailVerification:
+      bypassEmail || googleOnly
+        ? undefined
+        : {
+            sendOnSignUp: true,
+            autoSignInAfterVerification: true,
+            sendVerificationEmail: async ({ user, url }) => {
+              await sendHostedVerificationEmail({
+                email: user.email,
+                confirmationUrl: url,
+              });
+            },
           },
-        },
     socialProviders: getSocialProviders(),
     // Where Google sign-in failures land (canceled consent screen, replayed
     // callback URLs). Without this the default /api/auth/error page 302s to
@@ -442,6 +447,7 @@ export function hasHostedAuthConfig() {
     return (
       hasHostedTurnstileConfig(env) &&
       (Reflect.get(env, "BYPASS_EMAIL_VERIFICATION") === "true" ||
+        isByokMode(env.AUTH_MODE, env.DATAFORSEO_BYOK) ||
         hasHostedAuthEmailConfig())
     );
   } catch {

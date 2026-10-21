@@ -3,6 +3,7 @@ import { ShieldAlert, Wrench } from "lucide-react";
 import { GateCard } from "@/client/components/GateCard";
 import { Alert, AlertDescription } from "@/client/components/ui/alert";
 import { Button } from "@/client/components/ui/button";
+import { isByokClientMode } from "@/lib/byok";
 
 export function SamSetupGate({
   errorMessage,
@@ -19,24 +20,38 @@ export function SamSetupGate({
       tone="warning"
       title="Enable AI Features"
       description={
-        <>
+        isByokClientMode() ? (
           <p>
-            SAM, OpenSEO&apos;s in-app AI agent, needs an OpenRouter API key.
-            Create a key on OpenRouter, set it as the{" "}
-            <code>OPENROUTER_API_KEY</code> environment variable, restart
-            OpenSEO, then confirm here.
-          </p>
-          <p className="text-xs">
-            Step-by-step instructions for every deployment are in the{" "}
+            SAM, OpenSEO&apos;s in-app AI agent, runs on your own OpenRouter API
+            key. Create a key on OpenRouter, add it in{" "}
             <Link
               className="underline underline-offset-2 hover:text-foreground"
-              to="/help/openrouter-api-key"
+              to="/settings"
             >
-              OpenRouter API key setup guide
+              Settings
             </Link>
-            .
+            , then confirm here.
           </p>
-        </>
+        ) : (
+          <>
+            <p>
+              SAM, OpenSEO&apos;s in-app AI agent, needs an OpenRouter API key.
+              Create a key on OpenRouter, set it as the{" "}
+              <code>OPENROUTER_API_KEY</code> environment variable, restart
+              OpenSEO, then confirm here.
+            </p>
+            <p className="text-xs">
+              Step-by-step instructions for every deployment are in the{" "}
+              <Link
+                className="underline underline-offset-2 hover:text-foreground"
+                to="/help/openrouter-api-key"
+              >
+                OpenRouter API key setup guide
+              </Link>
+              .
+            </p>
+          </>
+        )
       }
       actions={
         <>

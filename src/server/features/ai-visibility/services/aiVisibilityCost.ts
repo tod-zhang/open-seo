@@ -2,9 +2,9 @@ import { AiVisibilityRepository as repo } from "../repositories/AiVisibilityRepo
 import { AiVisibilityError } from "./aiVisibilityErrors";
 import { aiScope } from "./aiVisibilityConfiguration";
 import {
-  getOptionalEnvValue,
-  isHostedServerAuthMode,
-} from "@/server/lib/runtime-env";
+  isDataforseoProviderConfigured,
+  isHostedBillingEnabled,
+} from "@/server/lib/byok-mode";
 import {
   aiEngineUsesModelApi,
   AI_ENGINE_LABELS,
@@ -71,7 +71,7 @@ export async function estimateCost(
     );
   const scope = aiScope(config, input.promptIds);
   const answers = scope.prompts.flatMap(() => scope.engines);
-  const hosted = await isHostedServerAuthMode();
+  const hosted = await isHostedBillingEnabled();
   const cost = aiCostForAnswers(answers, hosted, "queued");
   const runNow = aiCostForAnswers(answers, hosted, "live");
   const liveEngines = scope.engines.filter(aiEngineUsesModelApi);
@@ -99,7 +99,7 @@ export async function estimateCost(
             `${liveEngines.map((e) => AI_ENGINE_LABELS[e]).join(" and ")} ${liveEngines.length === 1 ? "uses" : "use"} live API pricing, which costs more per answer.`,
           ]
         : []),
-      ...(!(await getOptionalEnvValue("DATAFORSEO_API_KEY"))
+      ...(!(await isDataforseoProviderConfigured())
         ? [
             "DataForSEO is not configured on this server. Setup is available; collection needs an operator to add its API key.",
           ]

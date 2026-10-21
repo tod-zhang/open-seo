@@ -3,7 +3,7 @@ import { billingAccountQueryOptions } from "@/client/features/billing/billingAcc
 import { organizationContextQueryOptions } from "@/client/features/team/organizationQueries";
 import { captureClientEvent } from "@/client/lib/posthog";
 import { queryClient } from "@/client/tanstack-db";
-import { isHostedClientAuthMode } from "@/lib/auth-mode";
+import { isHostedBillingClientMode } from "@/lib/byok";
 import { hasOrgPermission } from "@/lib/org-permissions";
 import { createPlanCheckout } from "@/serverFunctions/billing";
 import { AUTUMN_PAID_PLAN_ID, type CheckoutPlanId } from "@/shared/billing";
@@ -31,7 +31,7 @@ const UPGRADE_REDIRECT = "/";
  * can't use it.
  */
 export function prefetchUpgradeCheckout() {
-  if (!isHostedClientAuthMode()) return;
+  if (!isHostedBillingClientMode()) return;
   void Promise.all([
     queryClient.ensureQueryData(billingAccountQueryOptions()),
     queryClient.ensureQueryData(organizationContextQueryOptions()),

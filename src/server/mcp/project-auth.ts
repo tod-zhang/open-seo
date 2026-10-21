@@ -1,3 +1,4 @@
+import { withOrganizationDataforseoKey } from "@/server/lib/dataforseo/api-key-scope";
 import { AuthRepository } from "@/server/auth/repositories/AuthRepository";
 import { ProjectService } from "@/server/features/projects/services/ProjectService";
 import { AppError } from "@/server/lib/errors";
@@ -76,6 +77,11 @@ export function withMcpProjectAuth<TArgs extends ProjectScopedArgs, TResult>(
 ) {
   return async (args: TArgs, toolContext: ToolContext) => {
     const context = await requireProjectAccess(toolContext, args.projectId);
-    return handler(args, context);
+    // BYOK: the key of the project's organization, which for a hosted
+    // credential can differ from the request's fallback organization.
+    return withOrganizationDataforseoKey(
+      context.auth.organizationId,
+      async () => handler(args, context),
+    );
   };
 }

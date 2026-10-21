@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SerpLocationCombobox } from "@/client/components/SerpLocationCombobox";
 import { usePrewarmSerpLocations } from "@/client/components/usePrewarmSerpLocations";
-import { isHostedClientAuthMode } from "@/lib/auth-mode";
+import { isHostedBillingClientMode } from "@/lib/byok";
 import { LOCAL_VOLUME_COST_USD, applyBillingMarkupUsd } from "@/shared/billing";
 import { getIsoCountryCode } from "@/shared/keyword-locations";
 
@@ -42,7 +42,7 @@ export function KeywordAreaField({ locationCode, value, onChange }: Props) {
  * marked-up price; self-hosted deployments pay DataForSEO directly.
  */
 export function LocalVolumeCostNote() {
-  const costUsd = isHostedClientAuthMode()
+  const costUsd = isHostedBillingClientMode()
     ? applyBillingMarkupUsd(LOCAL_VOLUME_COST_USD)
     : LOCAL_VOLUME_COST_USD;
   return (

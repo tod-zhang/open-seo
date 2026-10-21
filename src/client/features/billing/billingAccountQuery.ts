@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { queryClient } from "@/client/tanstack-db";
-import { isHostedClientAuthMode } from "@/lib/auth-mode";
+import { isHostedBillingClientMode } from "@/lib/byok";
 
 /**
  * The organization's plan and credits. Every billing surface reads this one
@@ -25,6 +25,6 @@ export const billingAccountQueryOptions = () =>
 
 /** Starts loading the billing account without waiting for it. Hosted only. */
 export function prefetchBillingAccount() {
-  if (!isHostedClientAuthMode()) return;
+  if (!isHostedBillingClientMode()) return;
   void queryClient.prefetchQuery(billingAccountQueryOptions());
 }

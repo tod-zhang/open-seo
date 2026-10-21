@@ -1,5 +1,5 @@
+import { isDataforseoProviderConfigured } from "@/server/lib/byok-mode";
 import { AiVisibilityRepository as repo } from "../repositories/AiVisibilityRepository";
-import { getOptionalEnvValue } from "@/server/lib/runtime-env";
 import {
   aiEngineUsesModelApi,
   AI_ENGINE_LABELS,
@@ -38,7 +38,7 @@ export async function getTracker(input: {
       repo.getConfiguration(input.projectId),
       repo.listCompetitors(input.projectId),
       repo.listRuns(input.projectId, 10),
-      getOptionalEnvValue("DATAFORSEO_API_KEY"),
+      isDataforseoProviderConfigured(),
       repo.getProject(input.projectId),
     ],
   );

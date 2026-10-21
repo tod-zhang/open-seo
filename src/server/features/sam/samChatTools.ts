@@ -1,3 +1,4 @@
+import { withOrganizationDataforseoKey } from "@/server/lib/dataforseo/api-key-scope";
 import {
   getAiVisibilityTrackerTool,
   generateAiVisibilityPromptsTool,
@@ -163,7 +164,13 @@ function adaptMcpTool<Shape extends ZodRawShape>(
         // request scope, so each execution scopes its own Postgres client
         // (no-op in D1 mode) — same rule as the DO's other DB-touching seams.
         return capToolOutput(
-          toModelOutput(await withPgClient(() => handler(fullArgs, context))),
+          toModelOutput(
+            await withPgClient(() =>
+              withOrganizationDataforseoKey(context.auth.organizationId, () =>
+                handler(fullArgs, context),
+              ),
+            ),
+          ),
         );
       } catch (error) {
         // Surface the failure to the model so it can recover or report it,

@@ -5,6 +5,7 @@ import {
   getOAuthSignedQuery,
 } from "@/lib/auth-redirect";
 import { isHostedClientAuthMode } from "@/lib/auth-mode";
+import { isByokClientMode } from "@/lib/byok";
 import { PRIVACY_URL, TERMS_URL } from "@/shared/terms";
 
 export const authRedirectSearchSchema = z.object({
@@ -92,15 +93,18 @@ export function AuthMethodChooser({
         {isBusy ? "Opening Google..." : googleLabel}
       </Button>
 
-      <Button
-        type="button"
-        variant="outline"
-        className="w-full bg-card font-semibold dark:border-border dark:bg-card"
-        onClick={onContinueWithEmail}
-        disabled={disabled || isBusy}
-      >
-        {emailLabel}
-      </Button>
+      {/* BYOK deployments sign in with Google only (src/lib/auth.ts). */}
+      {isByokClientMode() ? null : (
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full bg-card font-semibold dark:border-border dark:bg-card"
+          onClick={onContinueWithEmail}
+          disabled={disabled || isBusy}
+        >
+          {emailLabel}
+        </Button>
+      )}
     </div>
   );
 }

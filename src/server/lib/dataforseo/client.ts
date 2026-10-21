@@ -63,7 +63,8 @@ import {
   fetchAiTrackingLiveAnswer,
   postAiTrackingTasks,
 } from "@/server/lib/dataforseo/ai-tracking";
-import { isHostedServerAuthMode } from "@/server/lib/runtime-env";
+import { isHostedBillingEnabled } from "@/server/lib/byok-mode";
+import { withOrganizationDataforseoKey } from "@/server/lib/dataforseo/api-key-scope";
 import { AppError } from "@/server/lib/errors";
 
 export { mapDataforseoPathToCreditFeature };
@@ -319,7 +320,8 @@ export function createDataforseoClient(customer: BillingCustomerContext) {
 }
 
 /**
- * The one seam every DataForSEO charge passes through (hosted mode only).
+ * The one seam every DataForSEO charge passes through (billed in hosted mode,
+ * unless the deployment is BYOK).
  * Order: reserve the estimate on the org's credits -> provider calls -> settle
  * the hold on their real cost. The hold is atomic in Autumn, so concurrent
  * calls cannot all pass on one stale balance reading.
@@ -337,11 +339,13 @@ async function meterDataforseoCalls<T>(
   creditFeature?: CreditFeature,
 ): Promise<PromiseSettledResult<T>[]> {
   if (executes.length === 0) return [];
-  const isHostedMode = await isHostedServerAuthMode();
 
-  if (!isHostedMode) {
-    return Promise.allSettled(
-      executes.map(async (execute) => (await execute()).data),
+  if (!(await isHostedBillingEnabled())) {
+    // Unbilled: self-hosted (operator's key) or BYOK (the workspace's key).
+    return withOrganizationDataforseoKey(customer.organizationId, () =>
+      Promise.allSettled(
+        executes.map(async (execute) => (await execute()).data),
+      ),
     );
   }
 

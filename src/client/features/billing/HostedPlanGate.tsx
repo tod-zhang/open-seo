@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { billingAccountQueryOptions } from "@/client/features/billing/billingAccountQuery";
-import { isHostedClientAuthMode } from "@/lib/auth-mode";
+import { isHostedBillingClientMode } from "@/lib/byok";
 import type { PlanStatus } from "@/shared/billing";
 
 // The single client-side plan gate. It is a UX layer only: the server enforces
@@ -8,7 +8,7 @@ import type { PlanStatus } from "@/shared/billing";
 export function useHostedPlanGate(): "loading" | PlanStatus {
   // Self-hosted has no Autumn customer and resolves to the paid tier on the
   // server, so only hosted mode looks up the plan.
-  const isHostedMode = isHostedClientAuthMode();
+  const isHostedMode = isHostedBillingClientMode();
   const accountQuery = useQuery({
     ...billingAccountQueryOptions(),
     enabled: isHostedMode,

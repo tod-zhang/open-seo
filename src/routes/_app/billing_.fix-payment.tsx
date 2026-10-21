@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { isHostedClientAuthMode } from "@/lib/auth-mode";
+import { isHostedBillingClientMode } from "@/lib/byok";
 import { useQuery } from "@tanstack/react-query";
 import {
   organizationContextQueryOptions,
@@ -38,7 +38,7 @@ export const Route = createFileRoute("/_app/billing_/fix-payment")({
       search.returned === true || search.returned === "true" ? true : undefined,
   }),
   beforeLoad: () => {
-    if (!isHostedClientAuthMode()) {
+    if (!isHostedBillingClientMode()) {
       throw notFound();
     }
   },

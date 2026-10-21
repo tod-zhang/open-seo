@@ -7,9 +7,9 @@ import {
 import { AI_ANSWER_FAILURES, AiVisibilityError } from "./aiVisibilityErrors";
 import { aiScope } from "./aiVisibilityConfiguration";
 import {
-  getOptionalEnvValue,
-  isHostedServerAuthMode,
-} from "@/server/lib/runtime-env";
+  isDataforseoProviderConfigured,
+  isHostedBillingEnabled,
+} from "@/server/lib/byok-mode";
 import {
   getOrCreateOrganizationCustomer,
   getUsageCreditsRemaining,
@@ -74,7 +74,7 @@ export async function startRun(
   billing: BillingCustomerContext,
   promptIds?: string[],
 ): Promise<AiRun> {
-  if (!(await getOptionalEnvValue("DATAFORSEO_API_KEY")))
+  if (!(await isDataforseoProviderConfigured()))
     throw new AiVisibilityError(
       "PROVIDER_NOT_CONFIGURED",
       "An operator must configure DATAFORSEO_API_KEY before collection. Your saved tracker remains available.",
@@ -97,7 +97,7 @@ export async function startRun(
     );
   // Hosted checks need credits for every answer before they start, like rank
   // checks. The tracker says why no check ran, whichever path started it.
-  if (await isHostedServerAuthMode()) {
+  if (await isHostedBillingEnabled()) {
     const required = aiCostForAnswers(
       scope.prompts.flatMap(() => scope.engines),
       true,
@@ -196,7 +196,7 @@ export async function runCheck(
   // Price the check now and refuse it above what the user approved.
   const { costUsd } = aiCostForAnswers(
     scope.prompts.flatMap(() => scope.engines),
-    await isHostedServerAuthMode(),
+    await isHostedBillingEnabled(),
     "live",
   );
   if (Math.round(costUsd * 1e6) > Math.round(input.maxCostUsd * 1e6))
