@@ -29,7 +29,7 @@ import { LanguagePreferenceRadio } from "@/client/i18n/LanguagePreference";
 import { getStandardErrorMessage } from "@/client/lib/error-messages";
 import { signOutAndRedirect, useSession } from "@/lib/auth-client";
 import { BILLING_ROUTE } from "@/shared/billing";
-import { isHostedBillingClientMode } from "@/lib/byok";
+import { isByokClientMode, isHostedBillingClientMode } from "@/lib/byok";
 import {
   Sidebar as UiSidebar,
   SidebarContent,
@@ -234,11 +234,14 @@ function AccountFooter({ ready }: { ready: boolean }) {
   return (
     <UiSidebarFooter className="gap-0 border-t border-sidebar-border pb-safe">
       <SidebarMenu>
-        <SidebarNavLink
-          icon={CircleHelp}
-          label="Help & Community"
-          linkProps={{ to: "/support" }}
-        />
+        {/* Support goes to the OpenSEO team, who don't run BYOK deployments. */}
+        {isByokClientMode() ? null : (
+          <SidebarNavLink
+            icon={CircleHelp}
+            label="Help & Community"
+            linkProps={{ to: "/support" }}
+          />
+        )}
         {email ? (
           <SidebarMenuItem>
             <DropdownMenu>

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { CopyButton } from "@/client/components/CopyButton";
 import { PageHeader } from "@/client/components/PageHeader";
 import {
@@ -9,11 +9,15 @@ import {
   CardTitle,
 } from "@/client/components/ui/card";
 import { SUPPORT_EMAIL } from "@/client/lib/support";
+import { isByokClientMode } from "@/lib/byok";
 
 const DISCORD_URL = "https://discord.gg/c9uGs3cFXr";
 const GITHUB_URL = "https://github.com/every-app/open-seo";
 
 export const Route = createFileRoute("/_app/support")({
+  beforeLoad: () => {
+    if (isByokClientMode()) throw redirect({ to: "/", replace: true });
+  },
   component: SupportPage,
 });
 
