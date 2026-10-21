@@ -28,6 +28,24 @@ export function isGoogleDataEnabled() {
   return !isByokClientMode();
 }
 
+/**
+ * Site audits crawl other people's sites from the deployment's own server,
+ * which on a free BYOK deployment open to anyone risks the server's IP being
+ * blocked, so BYOK turns audits off along with their screens and tools.
+ * Build-time like isByokClientMode, so the server bundle reads it too.
+ */
+export function isSiteAuditEnabled() {
+  return !isByokClientMode();
+}
+
+/**
+ * The project Integrations tab (IndexNow, and the Shopify crawler access that
+ * only audits use) is off in BYOK. Build-time, like the flags above.
+ */
+export function isProjectIntegrationsEnabled() {
+  return !isByokClientMode();
+}
+
 /** The client half of isHostedBillingEnabled: hosted, and not BYOK. */
 export function isHostedBillingClientMode() {
   return isHostedClientAuthMode() && !isByokClientMode();

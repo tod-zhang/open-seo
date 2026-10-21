@@ -33,7 +33,7 @@ import {
 } from "@/serverFunctions/dashboard";
 import { Skeleton } from "@/client/components/ui/skeleton";
 import { isHostedClientAuthMode } from "@/lib/auth-mode";
-import { isGoogleDataEnabled } from "@/lib/byok";
+import { isGoogleDataEnabled, isSiteAuditEnabled } from "@/lib/byok";
 
 export function DashboardPage({
   projectId,
@@ -132,7 +132,7 @@ export function DashboardPage({
   ];
   const cards = [
     ...(isGoogleDataEnabled() ? googleCards : []),
-    ...(overview
+    ...(overview && isSiteAuditEnabled()
       ? [
           {
             key: "audit",

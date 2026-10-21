@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { ProjectPageHeader } from "@/client/features/projects/ProjectPageHeader";
 import { SettingsTabs } from "@/client/features/projects/SettingsTabs";
+import { isProjectIntegrationsEnabled } from "@/lib/byok";
 
 export const Route = createFileRoute("/_app/p/$projectId/settings")({
   component: ProjectSettingsLayout,
@@ -18,7 +19,10 @@ function ProjectSettingsLayout() {
             title="Project settings"
             showBackLink
           />
-          <SettingsTabs projectId={projectId} />
+          {/* Integrations is the only other tab, so BYOK shows no tabs. */}
+          {isProjectIntegrationsEnabled() ? (
+            <SettingsTabs projectId={projectId} />
+          ) : null}
         </div>
 
         <Outlet />

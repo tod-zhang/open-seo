@@ -72,7 +72,7 @@ import {
 } from "@/server/mcp/tools/local-seo-tools";
 import { researchKeywordsTool } from "@/server/mcp/tools/research-keywords";
 import { saveKeywordsTool } from "@/server/mcp/tools/save-keywords";
-import { isGoogleDataEnabled } from "@/lib/byok";
+import { isGoogleDataEnabled, isSiteAuditEnabled } from "@/lib/byok";
 import {
   getSearchConsolePerformanceTool,
   inspectUrlsTool,
@@ -469,9 +469,13 @@ export function buildSamMcpTools(
           ),
         }
       : {}),
-    run_site_audit: adaptTool(runSiteAuditTool),
-    get_audit_status: waitingAuditStatusTool(adaptTool),
-    get_audit_issues: adaptTool(getAuditIssuesTool),
-    get_audit_pages: adaptTool(getAuditPagesTool),
+    ...(isSiteAuditEnabled()
+      ? {
+          run_site_audit: adaptTool(runSiteAuditTool),
+          get_audit_status: waitingAuditStatusTool(adaptTool),
+          get_audit_issues: adaptTool(getAuditIssuesTool),
+          get_audit_pages: adaptTool(getAuditPagesTool),
+        }
+      : {}),
   };
 }

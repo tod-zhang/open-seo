@@ -1,4 +1,5 @@
 import { projectsQueryOptions } from "@/client/features/projects/projectQueries";
+import { isSiteAuditEnabled } from "@/lib/byok";
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -107,10 +108,12 @@ function GeneralSection({ project }: { project: ProjectSummary }) {
             )}
           </form.AppField>
 
-          <p className="text-sm text-muted-foreground">
-            Adding your website starts a 50-page scan with JavaScript rendering.
-            Rendering uses your credits.
-          </p>
+          {isSiteAuditEnabled() ? (
+            <p className="text-sm text-muted-foreground">
+              Adding your website starts a 50-page scan with JavaScript
+              rendering. Rendering uses your credits.
+            </p>
+          ) : null}
           <form.AppField name="domain">
             {(field) => (
               <field.TextField

@@ -4,6 +4,7 @@ import { AuditService } from "@/server/features/audit/services/AuditService";
 import { AuditRepository } from "@/server/features/audit/repositories/AuditRepository";
 import { DataRefreshClaimRepository } from "../repositories/DataRefreshClaimRepository";
 import { buildCacheKey } from "@/server/lib/r2-cache";
+import { isSiteAuditEnabled } from "@/lib/byok";
 import { asAppError } from "@/server/lib/errors";
 import { captureServerEvent } from "@/server/lib/posthog";
 import type { BillingCustomerContext } from "@/server/billing/subscription";
@@ -17,7 +18,11 @@ async function start(
   let token: string | null = null;
   let auditStarted = false;
   try {
-    if (!domain || (await AuditRepository.getLatestAuditForProject(projectId)))
+    if (
+      !isSiteAuditEnabled() ||
+      !domain ||
+      (await AuditRepository.getLatestAuditForProject(projectId))
+    )
       return null;
     key = await buildCacheKey("dashboard:first-audit", {
       projectId,
