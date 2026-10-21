@@ -55,6 +55,12 @@ const ACTIVE_WORKFLOW_STATUSES = new Set<RankCheckWorkflowStatus["status"]>([
 
 const RANK_CHECK_STARTUP_GRACE_MS = 60 * 1000;
 
+// No check runs this long: the queued path and both retry rounds finish within
+// about an hour. Self-hosted Docker keeps workflow state on a volume, so a run
+// cut off by a container restart can still report an active workflow; past
+// this age the run is stale whatever the workflow says.
+const RANK_CHECK_MAX_RUNTIME_MS = 2 * 60 * 60 * 1000;
+
 async function getRankCheckWorkflowStatus(
   runId: string,
 ): Promise<RankCheckWorkflowStatus | null> {
@@ -93,6 +99,10 @@ async function getStaleRankCheckRunReason(input: {
   runId: string;
   ageMs: number;
 }) {
+  if (input.ageMs > RANK_CHECK_MAX_RUNTIME_MS) {
+    return "Rank check stopped responding";
+  }
+
   const workflowStatus = await getRankCheckWorkflowStatus(input.runId);
 
   if (workflowStatus && ACTIVE_WORKFLOW_STATUSES.has(workflowStatus.status)) {
