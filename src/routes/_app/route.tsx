@@ -9,6 +9,7 @@ import { PageLoading } from "@/client/components/Spinner";
 import { getLastProjectId } from "@/client/lib/active-project";
 import { AuthenticatedAppLayout } from "@/client/layout/AppShell";
 import { useOnboardingRedirect } from "@/client/features/onboarding/useOnboardingRedirect";
+import { isHostedBillingClientMode } from "@/lib/byok";
 
 export const Route = createFileRoute("/_app")({
   component: AppRouteLayout,
@@ -46,7 +47,9 @@ function AppRouteLayout() {
         ready && authGate.isHostedMode ? (
           <>
             <TermsUpdateBanner />
-            {projectId ? <FreePlanBanner /> : null}
+            {projectId && isHostedBillingClientMode() ? (
+              <FreePlanBanner />
+            ) : null}
           </>
         ) : undefined
       }
