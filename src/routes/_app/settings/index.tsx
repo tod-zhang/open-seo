@@ -30,7 +30,8 @@ function PersonalSettings() {
 
           <ApiKeySettings />
 
-          <PrivacySettings />
+          {/* BYOK has no PostHog or Loops, so these switches would do nothing. */}
+          {isByokClientMode() ? null : <PrivacySettings />}
         </>
       ) : (
         <section className="space-y-3">

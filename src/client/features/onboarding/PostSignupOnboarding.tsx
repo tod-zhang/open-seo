@@ -6,6 +6,13 @@ import { AgentSetup } from "@/client/features/ai-mcp/AgentSetup";
 import { SearchConsoleOnboardingStep } from "./SearchConsoleOnboardingStep";
 import { AnalyticsOnboardingStep } from "./AnalyticsOnboardingStep";
 
+const STEP_LABELS = {
+  website: "Website",
+  search_console: "Google Search Console",
+  analytics: "Preferences",
+  agent_setup: "Agent setup",
+} as const;
+
 type PostSignupOnboardingProps = {
   step: number;
   onNext: () => void;
@@ -35,12 +42,7 @@ export function PostSignupOnboarding({
       {accountMenu}
       <OnboardingCard
         step={step + 1}
-        steps={[
-          "Website",
-          "Google Search Console",
-          "Preferences",
-          "Agent setup",
-        ]}
+        steps={ONBOARDING_STEPS.map((id) => STEP_LABELS[id])}
         onStepChange={onStepChange}
         disabled={isSaving}
       >
