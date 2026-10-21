@@ -1,3 +1,4 @@
+import { withOrganizationDataforseoKey } from "@/server/lib/dataforseo/api-key-scope";
 import {
   WorkflowEntrypoint,
   type WorkflowEvent,
@@ -97,8 +98,12 @@ export class AiVisibilityWorkflow extends WorkflowEntrypoint<
       const remaining = pending;
       let round: Awaited<ReturnType<typeof collectAiRound>>;
       try {
+        // task_get runs outside the metered client, so it opens the
+        // workspace's key scope itself (BYOK).
         round = await pgStep(step, `read-${name}`, COLLECT_STEP, () =>
-          collectAiRound(runId, remaining, canRetry),
+          withOrganizationDataforseoKey(customer.organizationId, () =>
+            collectAiRound(runId, remaining, canRetry),
+          ),
         );
       } catch (error) {
         // Posted tasks are already paid for; keep polling them next round.

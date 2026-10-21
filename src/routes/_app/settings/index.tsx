@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ApiKeySettings } from "@/client/features/settings/ApiKeySettings";
+import { DataforseoKeySettings } from "@/client/features/settings/DataforseoKeySettings";
 import { SectionHeader } from "@/client/components/PageHeader";
 import { ThemePreferenceRadio } from "@/client/components/ThemePreferenceMenuItems";
 import { PrivacySettings } from "@/client/features/settings/PrivacySettings";
 import { isHostedClientAuthMode } from "@/lib/auth-mode";
+import { isByokClientMode } from "@/lib/byok";
 import { version } from "../../../../package.json";
 
 export const Route = createFileRoute("/_app/settings/")({
@@ -24,6 +26,8 @@ function PersonalSettings() {
 
       {isHosted ? (
         <>
+          {isByokClientMode() ? <DataforseoKeySettings /> : null}
+
           <ApiKeySettings />
 
           <PrivacySettings />

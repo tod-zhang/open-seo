@@ -1,9 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import {
-  getOptionalEnvValue,
-  isHostedServerAuthMode,
-} from "@/server/lib/runtime-env";
+import { getOptionalEnvValue } from "@/server/lib/runtime-env";
+import { isHostedBillingEnabled } from "@/server/lib/byok-mode";
 import { requireProjectContext } from "@/serverFunctions/middleware";
 
 const OPENROUTER_KEY_MISSING_MESSAGE =
@@ -23,7 +21,7 @@ export const getSamAccessSetupStatus = createServerFn({ method: "GET" })
   .middleware(requireProjectContext)
   .validator(projectScopedSchema)
   .handler(async (): Promise<SamAccessStatus> => {
-    if (await isHostedServerAuthMode()) {
+    if (await isHostedBillingEnabled()) {
       return { enabled: true, errorMessage: null };
     }
 

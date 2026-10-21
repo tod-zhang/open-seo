@@ -1,3 +1,4 @@
+import { isByokClientMode } from "@/lib/byok";
 import {
   Bookmark,
   Bot,
@@ -160,6 +161,7 @@ export function getProjectNavGroups(projectId: string) {
   ];
 }
 
-export const dataforseoHelpLinkOptions = linkOptions({
-  to: "/help/dataforseo-api-key",
-});
+// BYOK workspaces save their key in Settings instead of the operator's env.
+export const dataforseoHelpLinkOptions = isByokClientMode()
+  ? linkOptions({ to: "/settings" })
+  : linkOptions({ to: "/help/dataforseo-api-key" });

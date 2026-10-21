@@ -1,3 +1,4 @@
+import { withOrganizationDataforseoKey } from "@/server/lib/dataforseo/api-key-scope";
 import {
   getAiVisibilityTrackerTool,
   generateAiVisibilityPromptsTool,
@@ -174,10 +175,15 @@ function registerOpenSeoTool<Input extends ToolSchema>(
     },
     async (args, context) => {
       const toolContext = createMcpToolContext(context, authProps);
-      const result = await handler(
-        // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- args were validated against the tool's own inputSchema just above
-        args as ToolArgs<Input>,
-        toolContext,
+      // BYOK: DataForSEO calls in the tool run on the workspace's own key.
+      const result = await withOrganizationDataforseoKey(
+        toolContext.auth.organizationId,
+        () =>
+          handler(
+            // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- args were validated against the tool's own inputSchema just above
+            args as ToolArgs<Input>,
+            toolContext,
+          ),
       );
       if (!supportsApps || !widgetSource.success) return result;
       return rememberWidgetResult(

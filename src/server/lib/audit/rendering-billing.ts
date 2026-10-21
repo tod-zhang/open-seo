@@ -9,7 +9,7 @@ import {
 import { sendCreditsExhaustedEvent } from "@/server/email/onboarding-drip";
 import { AppError } from "@/server/lib/errors";
 import { captureServerEvent } from "@/server/lib/posthog";
-import { isHostedServerAuthMode } from "@/server/lib/runtime-env";
+import { isHostedBillingEnabled } from "@/server/lib/byok-mode";
 import {
   estimateRenderingCredits,
   renderingCreditsNeededText,
@@ -42,7 +42,7 @@ export async function lockRenderingCredits(input: {
   auditId: string;
   maxPages: number;
 }): Promise<RenderingLock[]> {
-  if (!(await isHostedServerAuthMode())) return [];
+  if (!(await isHostedBillingEnabled())) return [];
   const { id: customerId } = await getOrCreateOrganizationCustomer(
     input.customer,
   );

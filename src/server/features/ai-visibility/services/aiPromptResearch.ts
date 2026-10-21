@@ -22,8 +22,8 @@ import { buildCacheKey, getCached, setCached } from "@/server/lib/r2-cache";
 import {
   getOptionalEnvValue,
   getRequiredEnvValue,
-  isHostedServerAuthMode,
 } from "@/server/lib/runtime-env";
+import { isHostedBillingEnabled } from "@/server/lib/byok-mode";
 import { normalizeAiSuggestion } from "@/shared/ai-prompt-suggestions";
 import {
   AI_DEFAULT_TOPIC,
@@ -90,7 +90,7 @@ export async function researchAiPrompts(
   // Admit the whole search before buying prompt data, so a search that pays
   // for questions can always finish the relevance check that shows them.
   if (
-    (await isHostedServerAuthMode()) &&
+    (await isHostedBillingEnabled()) &&
     (await checkUsageCreditsDepleted(customer)).depleted
   )
     throw new AppError(

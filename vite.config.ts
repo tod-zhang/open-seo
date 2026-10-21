@@ -54,6 +54,7 @@ export default defineConfig(({ mode, command }) => {
       "VITE_",
       "AUTH_MODE",
       "BYPASS_EMAIL_VERIFICATION",
+      "DATAFORSEO_BYOK",
       "POSTHOG_PUBLIC_KEY",
       "POSTHOG_HOST",
       "TURNSTILE_SITE_KEY",

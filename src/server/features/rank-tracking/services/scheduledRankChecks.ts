@@ -1,7 +1,7 @@
 import { RankTrackingRepository } from "@/server/features/rank-tracking/repositories/RankTrackingRepository";
 import { beginRankCheckRun } from "@/server/features/rank-tracking/services/rankCheckRunGuards";
 import { customerHasPaidPlan } from "@/server/billing/subscription";
-import { isHostedServerAuthMode } from "@/server/lib/runtime-env";
+import { isHostedBillingEnabled } from "@/server/lib/byok-mode";
 import {
   computeNextCheckAt,
   devicesCount,
@@ -39,7 +39,7 @@ export async function runScheduledRankChecks(env: Env) {
   const nowIso = new Date().toISOString();
   const dueConfigs =
     await RankTrackingRepository.getDueConfigsWithOrganization(nowIso);
-  const isHosted = await isHostedServerAuthMode();
+  const isHosted = await isHostedBillingEnabled();
   const keywordCounts = await RankTrackingRepository.getKeywordCountsForConfigs(
     dueConfigs.map((config) => config.id),
   );

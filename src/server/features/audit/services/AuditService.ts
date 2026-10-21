@@ -30,13 +30,13 @@ import {
 } from "@/server/lib/audit/types";
 import { normalizeAndValidateStartUrl } from "@/server/lib/audit/url-policy";
 import { reconcileRunningAudit } from "@/server/features/audit/services/auditReconciler";
-import { isHostedServerAuthMode } from "@/server/lib/runtime-env";
+import { isHostedBillingEnabled } from "@/server/lib/byok-mode";
 
 // Free accounts keep bounded audit capacity; rendering reserves usage credits.
 async function resolveAuditLimitTier(
   customer: BillingCustomerContext,
 ): Promise<AuditLimitTier> {
-  if (!(await isHostedServerAuthMode())) return "self_hosted";
+  if (!(await isHostedBillingEnabled())) return "self_hosted";
   await getOrCreateOrganizationCustomer(customer);
   return (await customerHasPaidPlan(customer.organizationId)) ? "paid" : "free";
 }

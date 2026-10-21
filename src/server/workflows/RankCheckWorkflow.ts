@@ -27,7 +27,7 @@ import {
   estimateRankCheckCredits,
   rankCheckCostApprovalError,
 } from "@/shared/rank-tracking";
-import { isHostedServerAuthMode } from "@/server/lib/runtime-env";
+import { isHostedBillingEnabled } from "@/server/lib/byok-mode";
 
 const SINGLE_ATTEMPT_STEP_CONFIG = {
   retries: { limit: 0, delay: "1 second" as const },
@@ -103,7 +103,7 @@ async function prepareRankCheckKeywords(input: {
   // Scheduled checks go through the cheaper task queue, so estimate at queued
   // pricing — a live-price estimate would skip checks the user can afford.
   // The estimate is the worst case, so it covers every retry.
-  if (await isHostedServerAuthMode()) {
+  if (await isHostedBillingEnabled()) {
     const [monthlyCheck, topupCheck] = await Promise.all([
       autumn.check({
         customerId: input.billingCustomer.organizationId,
@@ -364,6 +364,7 @@ export class RankCheckWorkflow extends WorkflowEntrypoint<
           languageCode,
           locationName,
           runId,
+          organizationId: billingCustomer.organizationId,
         };
         // Scheduled checks use DataForSEO's task queue (~30% of live cost);
         // manual checks stay on the live endpoint for instant results.

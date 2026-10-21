@@ -23,7 +23,7 @@ import {
 } from "@/client/features/audit/launch/types";
 import type { useLaunchController } from "@/client/features/audit/launch/useLaunchController";
 import { getFieldError, getFormError } from "@/client/lib/forms";
-import { isHostedClientAuthMode } from "@/lib/auth-mode";
+import { isHostedBillingClientMode } from "@/lib/byok";
 import { RENDERED_MAX_AUDIT_PAGES } from "@/shared/audit-limits";
 import { renderingEstimateText } from "@/shared/audit-rendering";
 import { SUBSCRIBE_ROUTE } from "@/shared/billing";
@@ -231,7 +231,7 @@ function RenderingOptions({
         </FieldLabel>
       </div>
 
-      {isHostedClientAuthMode() && (
+      {isHostedBillingClientMode() && (
         <launchForm.Subscribe
           selector={(state) => ({
             renderJavaScript: state.values.renderJavaScript,

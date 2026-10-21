@@ -3,11 +3,21 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 vi.mock("@/server/lib/runtime-env", () => ({
   getRequiredEnvValue: vi.fn(async () => "encoded-credentials"),
 }));
+vi.mock(
+  "@/server/features/dataforseo-key/services/DataforseoKeyService",
+  () => ({
+    DataforseoKeyService: {
+      openOrganizationKey: vi.fn(async () => "workspace-credentials"),
+    },
+  }),
+);
 
+import { withOrganizationDataforseoKey } from "@/server/lib/dataforseo/api-key-scope";
 import { dataforseoPost } from "@/server/lib/dataforseo/core";
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
 });
 
 describe("DataForSEO transport", () => {
@@ -51,4 +61,40 @@ describe("DataForSEO transport", () => {
       expect(fetchMock).toHaveBeenCalledOnce();
     },
   );
+
+  describe("in BYOK mode", () => {
+    function stubByok() {
+      vi.stubEnv("AUTH_MODE", "hosted");
+      vi.stubEnv("DATAFORSEO_BYOK", "true");
+    }
+
+    it("authenticates with the workspace's own key", async () => {
+      stubByok();
+      const fetchMock = vi
+        .fn<typeof fetch>()
+        .mockResolvedValue(Response.json({ status_code: 20000, tasks: [] }));
+      vi.stubGlobal("fetch", fetchMock);
+
+      await withOrganizationDataforseoKey("org_1", () =>
+        dataforseoPost("/v3/backlinks/summary/live", []),
+      );
+
+      const [, init] = fetchMock.mock.calls[0];
+      expect(new Headers(init?.headers).get("Authorization")).toBe(
+        "Basic workspace-credentials",
+      );
+    });
+
+    // Falling back would bill the operator's DataForSEO account.
+    it("never falls back to the operator's key", async () => {
+      stubByok();
+      const fetchMock = vi.fn<typeof fetch>();
+      vi.stubGlobal("fetch", fetchMock);
+
+      await expect(
+        dataforseoPost("/v3/backlinks/summary/live", []),
+      ).rejects.toMatchObject({ code: "DATAFORSEO_KEY_REQUIRED" });
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+  });
 });
