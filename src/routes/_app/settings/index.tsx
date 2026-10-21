@@ -30,7 +30,8 @@ function PersonalSettings() {
 
           <ApiKeySettings />
 
-          <PrivacySettings />
+          {/* BYOK deployments don't run usage analytics or product emails. */}
+          {isByokClientMode() ? null : <PrivacySettings />}
         </>
       ) : (
         <section className="space-y-3">
