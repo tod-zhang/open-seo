@@ -12,6 +12,7 @@ import { BILLING_ROUTE } from "@/shared/billing";
 import { getSeoApiKeyStatus } from "@/serverFunctions/config";
 import { getLastProjectId } from "@/client/lib/active-project";
 import { dataforseoHelpLinkOptions } from "@/client/navigation/items";
+import { isGoogleDataEnabled } from "@/lib/byok";
 import {
   SidebarInset,
   SidebarProvider,
@@ -127,7 +128,7 @@ export function AuthenticatedAppLayout({
         />
       ) : null}
 
-      {ready ? (
+      {ready && isGoogleDataEnabled() ? (
         <GscReEngagementModal
           projectId={sidebarProjectId}
           suppressed={showMissingSeoApiKeyModal}

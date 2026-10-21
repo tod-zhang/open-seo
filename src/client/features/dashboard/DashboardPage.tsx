@@ -33,6 +33,7 @@ import {
 } from "@/serverFunctions/dashboard";
 import { Skeleton } from "@/client/components/ui/skeleton";
 import { isHostedClientAuthMode } from "@/lib/auth-mode";
+import { isGoogleDataEnabled } from "@/lib/byok";
 
 export function DashboardPage({
   projectId,
@@ -96,7 +97,7 @@ export function DashboardPage({
 
   // Search Console always renders: connected shows the report, otherwise the
   // connect pitch. It sits ahead of the optional GA4 pitch.
-  const cards = [
+  const googleCards = [
     {
       key: "newQueries",
       hasData: gscConnected,
@@ -128,6 +129,9 @@ export function DashboardPage({
           },
         ]
       : []),
+  ];
+  const cards = [
+    ...(isGoogleDataEnabled() ? googleCards : []),
     ...(overview
       ? [
           {
@@ -227,7 +231,10 @@ export function DashboardPage({
             {(
               [
                 ["overview", "Overview"],
-                ["keywords", "Keywords"],
+                // Keywords come from Search Console.
+                ...(isGoogleDataEnabled()
+                  ? ([["keywords", "Keywords"]] as const)
+                  : []),
                 ["backlinks", "Backlinks"],
               ] as const
             ).map(([value, label]) => (
@@ -251,12 +258,14 @@ export function DashboardPage({
           </TabsContent>
 
           <TabsContent value="keywords" keepMounted={false}>
-            <DashboardKeywords
-              key={`${projectId}:${activation.domain}`}
-              projectId={projectId}
-              connected={gscConnected}
-              siteUrl={activation.gsc.siteUrl}
-            />
+            {isGoogleDataEnabled() ? (
+              <DashboardKeywords
+                key={`${projectId}:${activation.domain}`}
+                projectId={projectId}
+                connected={gscConnected}
+                siteUrl={activation.gsc.siteUrl}
+              />
+            ) : null}
           </TabsContent>
           <TabsContent value="backlinks" keepMounted={false}>
             {activation.domain ? (

@@ -1,8 +1,10 @@
 import {
   createFileRoute,
+  redirect,
   stripSearchParams,
   useNavigate,
 } from "@tanstack/react-router";
+import { isGoogleDataEnabled } from "@/lib/byok";
 import { SearchPerformancePage } from "@/client/features/search-performance/SearchPerformancePage";
 import {
   SEARCH_PERFORMANCE_DEFAULT_PAGE_SIZE,
@@ -10,6 +12,11 @@ import {
 } from "@/types/schemas/search-performance";
 
 export const Route = createFileRoute("/_app/p/$projectId/search-performance")({
+  beforeLoad: ({ params }) => {
+    if (!isGoogleDataEnabled()) {
+      throw redirect({ to: "/p/$projectId", params, replace: true });
+    }
+  },
   validateSearch: searchPerformanceSearchSchema,
   search: {
     middlewares: [
