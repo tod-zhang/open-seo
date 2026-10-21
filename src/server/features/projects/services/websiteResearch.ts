@@ -12,6 +12,7 @@ import {
   type ResearchSpend,
 } from "@/server/billing/researchSpend";
 import { requireOpenRouterCostUsd } from "@/server/lib/chatAgent";
+import { withOrganizationDataforseoKey } from "@/server/lib/dataforseo/api-key-scope";
 import { fetchLiveSerp } from "@/server/lib/dataforseo/serp";
 import { DataforseoChargedTaskError } from "@/server/lib/dataforseo/envelope";
 import { normalizeBacklinksTarget } from "@/server/lib/dataforseoBacklinksTarget";
@@ -225,11 +226,13 @@ export async function researchWebsite(
                       let response;
                       for (let attempt = 0; ; attempt++) {
                         try {
-                          response = await fetchLiveSerp({
-                            keyword,
-                            ...market,
-                            depth: 10,
-                          });
+                          // In BYOK mode the search runs on the workspace's
+                          // own DataForSEO key, which only this scope provides.
+                          response = await withOrganizationDataforseoKey(
+                            customer.organizationId,
+                            () =>
+                              fetchLiveSerp({ keyword, ...market, depth: 10 }),
+                          );
                           break;
                         } catch (error) {
                           if (error instanceof DataforseoChargedTaskError)
