@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { SegmentedToggle } from "@/client/components/SegmentedToggle";
 import { getLanguage, setLanguage, startTranslator } from "./translator";
 
@@ -10,7 +10,8 @@ const LANGUAGE_OPTIONS = [
 
 /** Starts the zh-CN UI translator once the client has rendered. */
 export function UiTranslator() {
-  useEffect(() => startTranslator(), []);
+  // A layout effect runs before the first paint, so English never flashes.
+  useLayoutEffect(() => startTranslator(), []);
   return null;
 }
 
