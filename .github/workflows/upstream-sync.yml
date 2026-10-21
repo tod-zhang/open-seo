@@ -5,8 +5,9 @@ name: Upstream sync
 # opens (or refreshes) a PR from the `upstream-sync` branch so the conflicts
 # can be resolved by hand. Inert on the upstream repository itself.
 #
-# Fork setup: enable Actions, set Settings → Actions → General → Workflow
-# permissions to "Read and write" and allow Actions to create pull requests.
+# Fork setup: for the conflict PR, tick "Allow GitHub Actions to create and
+# approve pull requests" under Settings → Actions → General; otherwise a
+# conflicting run fails and GitHub emails the failure instead.
 # If upstream changes files under .github/workflows/, GITHUB_TOKEN cannot push
 # them; add a fine-grained PAT (Contents, Pull requests, Workflows: write) as
 # the UPSTREAM_SYNC_TOKEN secret to cover that case.
