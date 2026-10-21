@@ -3,6 +3,7 @@ import { ApiKeySettings } from "@/client/features/settings/ApiKeySettings";
 import { WorkspaceApiKeySettings } from "@/client/features/settings/WorkspaceApiKeySettings";
 import { SectionHeader } from "@/client/components/PageHeader";
 import { ThemePreferenceRadio } from "@/client/components/ThemePreferenceMenuItems";
+import { LanguagePreferenceRadio } from "@/client/i18n/LanguagePreference";
 import { PrivacySettings } from "@/client/features/settings/PrivacySettings";
 import { isHostedClientAuthMode } from "@/lib/auth-mode";
 import { isByokClientMode } from "@/lib/byok";
@@ -21,6 +22,10 @@ function PersonalSettings() {
         <div className="flex items-center justify-between gap-6">
           <span className="text-sm">Theme</span>
           <ThemePreferenceRadio />
+        </div>
+        <div className="flex items-center justify-between gap-6">
+          <span className="text-sm">Language</span>
+          <LanguagePreferenceRadio />
         </div>
       </section>
 

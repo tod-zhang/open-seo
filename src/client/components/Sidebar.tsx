@@ -25,6 +25,7 @@ import {
   SamSidebarPanel,
 } from "@/client/features/sam/SamSidebarPanel";
 import { ThemePreferenceRadio } from "@/client/components/ThemePreferenceMenuItems";
+import { LanguagePreferenceRadio } from "@/client/i18n/LanguagePreference";
 import { getStandardErrorMessage } from "@/client/lib/error-messages";
 import { signOutAndRedirect, useSession } from "@/lib/auth-client";
 import { BILLING_ROUTE } from "@/shared/billing";
@@ -310,6 +311,12 @@ function AccountFooter({ ready }: { ready: boolean }) {
                   <DropdownMenuLabel>Theme</DropdownMenuLabel>
                   <div className="px-1 pb-1">
                     <ThemePreferenceRadio />
+                  </div>
+                </DropdownMenuGroup>
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>Language</DropdownMenuLabel>
+                  <div className="px-1 pb-1">
+                    <LanguagePreferenceRadio />
                   </div>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />

@@ -17,6 +17,7 @@ import { themePreferenceInitScript } from "@/client/lib/theme";
 import { NotFound } from "@/client/components/NotFound";
 import { PrivacyBootstrap } from "@/client/components/PrivacyChoices";
 import { TooltipProvider } from "@/client/components/ui/tooltip";
+import { UiTranslator } from "@/client/i18n/LanguagePreference";
 import appCss from "@/client/styles/app.css?url";
 import { Toaster } from "sonner";
 import { queryClient } from "@/client/tanstack-db";
@@ -107,6 +108,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <QueryClientProvider client={queryClient}>
             <TooltipProvider>
               <PrivacyBootstrap />
+              <UiTranslator />
               {children}
               <ExportToSheetsModal />
               <Toaster position="bottom-right" mobileOffset={{ bottom: 100 }} />
