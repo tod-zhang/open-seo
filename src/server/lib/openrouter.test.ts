@@ -1,46 +1,46 @@
 import { generateText } from "ai";
-import { beforeEach, expect, it, vi } from "vitest";
+import { expect, it, vi } from "vitest";
 import { z } from "zod";
+import { buildChatAgentModel } from "./openrouter";
 
-const completion = () =>
-  Response.json({
-    choices: [
-      {
-        message: { role: "assistant", content: "ok" },
-        finish_reason: "stop",
-      },
-    ],
+async function requestBody(reasoningEffort?: "max" | "low") {
+  const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+    Response.json({
+      choices: [
+        {
+          message: { role: "assistant", content: "ok" },
+          finish_reason: "stop",
+        },
+      ],
+    }),
+  );
+  await generateText({
+    model: buildChatAgentModel("key", undefined, reasoningEffort),
+    prompt: "hi",
   });
-
-// The egress country is cached per module (one lookup per isolate), so each
-// test needs a fresh module to run its own lookup.
-beforeEach(() => {
-  vi.resetModules();
-});
-
-async function requestedModel(trace: () => Promise<Response>) {
-  const fetchMock = vi
-    .spyOn(globalThis, "fetch")
-    .mockImplementationOnce(trace)
-    .mockResolvedValueOnce(completion());
-  const { buildChatAgentModel } = await import("./openrouter");
-  await generateText({ model: buildChatAgentModel("key"), prompt: "hi" });
-  const body = z
-    .object({ model: z.string() })
-    .parse(JSON.parse(z.string().parse(fetchMock.mock.calls[1]?.[1]?.body)));
-  return body.model;
+  expect(fetchMock).toHaveBeenCalledWith(
+    "https://api.deepseek.com/chat/completions",
+    expect.anything(),
+  );
+  return z
+    .object({
+      model: z.string(),
+      thinking: z.object({ type: z.string() }),
+      reasoning_effort: z.string().optional(),
+    })
+    .parse(JSON.parse(z.string().parse(fetchMock.mock.calls[0]?.[1]?.body)));
 }
 
-it("sends OpenAI calls to MiniMax M3 from a country where OpenAI is blocked", async () => {
-  expect(
-    await requestedModel(async () => new Response("colo=HKG\nloc=HK\n")),
-  ).toBe("minimax/minimax-m3");
+it("calls DeepSeek V4 Pro with thinking at max effort by default", async () => {
+  expect(await requestBody()).toMatchObject({
+    model: "deepseek-v4-pro",
+    thinking: { type: "enabled" },
+    reasoning_effort: "max",
+  });
 });
 
-it("stays on OpenAI when the country lookup fails", async () => {
-  expect(
-    await requestedModel(async () => {
-      throw new Error("offline");
-    }),
-  ).toBe("openai/gpt-5.6-luna");
+it("turns thinking off for low-effort calls", async () => {
+  const body = await requestBody("low");
+  expect(body.thinking).toEqual({ type: "disabled" });
+  expect(body.reasoning_effort).toBeUndefined();
 });

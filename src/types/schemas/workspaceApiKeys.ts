@@ -39,7 +39,7 @@ const dataforseoKeySchema = z
 const openrouterKeySchema = z
   .string()
   .trim()
-  .min(1, "Paste your OpenRouter API key")
+  .min(1, "Paste your DeepSeek API key")
   .max(1000)
   .refine(
     (value) => /^[\x21-\x7e]+$/.test(value),

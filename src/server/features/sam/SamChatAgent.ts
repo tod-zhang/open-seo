@@ -348,7 +348,7 @@ export class SamChatAgent extends Think {
         ).catch(() => null);
         if (!this.workspaceOpenRouterKey) {
           turn.refusal = "no_key";
-          return this.refusalTurn("Add your OpenRouter API key in Settings.");
+          return this.refusalTurn("Add your DeepSeek API key in Settings.");
         }
       }
       if (await isHostedBillingEnabled()) {
