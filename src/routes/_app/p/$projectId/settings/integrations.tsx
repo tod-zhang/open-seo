@@ -1,14 +1,19 @@
 import { queryClient } from "@/client/tanstack-db/queryClient";
 import { googleConnectionOptions } from "@/client/features/integrations/googleProviders";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { GoogleConnectionCard } from "@/client/features/integrations/GoogleConnectionCard";
 import { CrawlerAccessSettings } from "@/client/features/settings/CrawlerAccessSettings";
 import { IndexNowSettings } from "@/client/features/settings/IndexNowSettings";
-import { isGoogleDataEnabled } from "@/lib/byok";
+import { isGoogleDataEnabled, isProjectIntegrationsEnabled } from "@/lib/byok";
 
 export const Route = createFileRoute(
   "/_app/p/$projectId/settings/integrations",
 )({
+  beforeLoad: ({ params }) => {
+    if (!isProjectIntegrationsEnabled()) {
+      throw redirect({ to: "/p/$projectId/settings", params, replace: true });
+    }
+  },
   loader: ({ params }) => {
     if (!isGoogleDataEnabled()) return;
     // Start both database checks on link intent without holding up navigation.

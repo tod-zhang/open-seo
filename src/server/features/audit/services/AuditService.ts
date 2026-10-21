@@ -1,4 +1,5 @@
 import { markOnboardingMilestone } from "@/server/email/onboarding-drip";
+import { isSiteAuditEnabled } from "@/lib/byok";
 import { isAuditRenderingAllowed } from "@/server/lib/audit/rendering-policy";
 import {
   lockRenderingCredits,
@@ -51,6 +52,9 @@ async function startAudit(input: {
   limitTier: AuditLimitTier;
   renderJavaScript?: boolean;
 }) {
+  if (!isSiteAuditEnabled()) {
+    throw new AppError("FORBIDDEN", "Site audits are turned off here.");
+  }
   const renderJavaScript = input.renderJavaScript ?? false;
   if (renderJavaScript && !(await isAuditRenderingAllowed())) {
     throw new AppError(

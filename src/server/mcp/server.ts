@@ -95,7 +95,11 @@ import {
 } from "@/server/mcp/tools/report-template-tools";
 import { researchKeywordsTool } from "@/server/mcp/tools/research-keywords";
 import { saveKeywordsTool } from "@/server/mcp/tools/save-keywords";
-import { isGoogleDataEnabled } from "@/lib/byok";
+import {
+  isGoogleDataEnabled,
+  isProjectIntegrationsEnabled,
+  isSiteAuditEnabled,
+} from "@/lib/byok";
 import {
   getSearchConsolePerformanceTool,
   inspectUrlsTool,
@@ -292,7 +296,7 @@ export function createOpenSeoMcpServer(
   register(listBusinessCategoriesTool);
   register(getLocalRankGridTool);
   register(getKeywordMetricsTool);
-  register(submitIndexNowUrlsTool);
+  if (isProjectIntegrationsEnabled()) register(submitIndexNowUrlsTool);
   // Search Console and GA4 tools, off where Google data is (BYOK).
   if (isGoogleDataEnabled()) {
     register(getSearchConsolePerformanceTool);
@@ -308,12 +312,14 @@ export function createOpenSeoMcpServer(
     register(getGoogleAnalyticsSiteSearchTool);
     register(getGoogleAnalyticsAudienceBreakdownTool);
   }
-  register(runSiteAuditTool);
-  register(listSiteAuditsTool);
-  register(deleteSiteAuditTool);
-  register(getAuditStatusTool);
-  register(getAuditIssuesTool);
-  register(getAuditPagesTool);
+  if (isSiteAuditEnabled()) {
+    register(runSiteAuditTool);
+    register(listSiteAuditsTool);
+    register(deleteSiteAuditTool);
+    register(getAuditStatusTool);
+    register(getAuditIssuesTool);
+    register(getAuditPagesTool);
+  }
   register(saveReportTool);
   register(listReportsTool);
   register(getReportTool);

@@ -1,10 +1,16 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { isSiteAuditEnabled } from "@/lib/byok";
 import { useCallback } from "react";
 import { auditSearchSchema } from "@/types/schemas/audit";
 import { LaunchView } from "@/client/features/audit/launch/LaunchView";
 import { AuditDetail } from "@/client/features/audit/AuditDetail";
 
 export const Route = createFileRoute("/_app/p/$projectId/audit/")({
+  beforeLoad: ({ params }) => {
+    if (!isSiteAuditEnabled()) {
+      throw redirect({ to: "/p/$projectId", params, replace: true });
+    }
+  },
   validateSearch: auditSearchSchema,
   component: SiteAuditPage,
 });

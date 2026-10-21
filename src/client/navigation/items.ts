@@ -1,4 +1,8 @@
-import { isByokClientMode, isGoogleDataEnabled } from "@/lib/byok";
+import {
+  isByokClientMode,
+  isGoogleDataEnabled,
+  isSiteAuditEnabled,
+} from "@/lib/byok";
 import {
   Bookmark,
   Bot,
@@ -149,7 +153,7 @@ export function getProjectNavGroups(projectId: string) {
           : []),
         byPath("/p/$projectId/rank-tracking"),
         byPath("/p/$projectId/saved"),
-        byPath("/p/$projectId/audit"),
+        ...(isSiteAuditEnabled() ? [byPath("/p/$projectId/audit")] : []),
       ],
     },
     {

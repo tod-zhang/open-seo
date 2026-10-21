@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { isSiteAuditEnabled } from "@/lib/byok";
 import { revalidateLogic } from "@tanstack/react-form";
 import { cn } from "cn";
 import { ArrowRight, ChevronDown } from "lucide-react";
@@ -48,9 +49,11 @@ export function WebsiteOnboardingStep({
         <h1 className="text-2xl font-semibold tracking-tight">
           What’s your website?
         </h1>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          We’ll start a site audit for you.
-        </p>
+        {isSiteAuditEnabled() ? (
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            We’ll start a site audit for you.
+          </p>
+        ) : null}
       </div>
       {project ? (
         <WebsiteForm

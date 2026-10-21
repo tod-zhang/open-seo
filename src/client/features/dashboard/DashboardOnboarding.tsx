@@ -7,6 +7,7 @@ import { setDashboardStepDismissed } from "@/serverFunctions/dashboard";
 import type { DashboardActivation } from "@/server/features/dashboard/services/DashboardService";
 import type { DashboardSetupStep } from "@/types/schemas/dashboard";
 import { getStepStatus, setupSteps } from "./dashboardSteps";
+import { isSiteAuditEnabled } from "@/lib/byok";
 import { DashboardSetupAction } from "./DashboardSetupAction";
 import {
   Accordion,
@@ -47,7 +48,9 @@ export function DashboardOnboarding({
     },
   });
   const steps = setupSteps.filter(
-    (step) => step.id !== "team" || isHostedClientAuthMode(),
+    (step) =>
+      (step.id !== "team" || isHostedClientAuthMode()) &&
+      (step.id !== "audit" || isSiteAuditEnabled()),
   );
   const remaining = steps.filter(
     (step) => getStepStatus(activation, step.id) === "todo",
