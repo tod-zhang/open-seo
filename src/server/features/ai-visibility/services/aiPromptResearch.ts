@@ -19,11 +19,11 @@ import {
 import { AppError } from "@/server/lib/errors";
 import { buildChatAgentModel } from "@/server/lib/openrouter";
 import { buildCacheKey, getCached, setCached } from "@/server/lib/r2-cache";
+import { getOptionalEnvValue } from "@/server/lib/runtime-env";
 import {
-  getOptionalEnvValue,
-  getRequiredEnvValue,
-} from "@/server/lib/runtime-env";
-import { isHostedBillingEnabled } from "@/server/lib/byok-mode";
+  getOpenRouterApiKey,
+  isHostedBillingEnabled,
+} from "@/server/lib/byok-mode";
 import { normalizeAiSuggestion } from "@/shared/ai-prompt-suggestions";
 import {
   AI_DEFAULT_TOPIC,
@@ -97,7 +97,7 @@ export async function researchAiPrompts(
       "INSUFFICIENT_CREDITS",
       "You need usage credits to research prompts.",
     );
-  const openRouterApiKey = await getRequiredEnvValue("OPENROUTER_API_KEY");
+  const openRouterApiKey = await getOpenRouterApiKey(customer.organizationId);
   const state = await getTracker({ projectId: input.projectId });
   const keyword = normalizeAiSuggestion(input.keyword);
   // DataForSEO has ChatGPT prompt data only in US English.

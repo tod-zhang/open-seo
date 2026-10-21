@@ -74,8 +74,8 @@ declare namespace Cloudflare {
     // "true" makes a hosted deployment bring-your-own-key: each workspace
     // saves its own DataForSEO key and Autumn billing is off (src/lib/byok.ts).
     DATAFORSEO_BYOK?: string;
-    // Encrypts the DataForSEO keys workspaces save in BYOK mode.
-    DATAFORSEO_KEY_SECRET?: string;
+    // Encrypts the API keys workspaces save in BYOK mode.
+    WORKSPACE_KEY_SECRET?: string;
     AI_VISIBILITY_WORKFLOW: Workflow<
       (
         | { runId: string }

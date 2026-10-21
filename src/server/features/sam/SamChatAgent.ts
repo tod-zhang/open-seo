@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- the agent lifecycle hooks (turn gates, model, metering) share per-turn instance state */
 import { Think } from "@cloudflare/think";
 import type {
   ChatErrorContext,
@@ -33,8 +34,15 @@ import {
   type SamTurnStats,
 } from "@/server/features/sam/samTurnTelemetry";
 import { buildChatAgentModel } from "@/server/lib/openrouter";
-import { getEnvValueSync } from "@/server/lib/runtime-env";
-import { isHostedBillingEnabled } from "@/server/lib/byok-mode";
+import {
+  getEnvValueSync,
+  isHostedServerAuthMode,
+} from "@/server/lib/runtime-env";
+import {
+  getOpenRouterApiKey,
+  isByokServerMode,
+  isHostedBillingEnabled,
+} from "@/server/lib/byok-mode";
 import {
   checkUsageCreditsDepleted,
   trackUsageCreditSpend,
@@ -143,6 +151,9 @@ export class SamChatAgent extends Think {
   // land in order; waitUntil keeps the final flush alive in the background.
   private turnUnbilledUsd = 0;
   private turnMonthlyRemaining: number | null = null;
+  // BYOK: the workspace's own OpenRouter key, resolved in beforeTurn because
+  // getModel() is sync. Memory only; it is never persisted.
+  private workspaceOpenRouterKey: string | null = null;
   private billing: Promise<void> = Promise.resolve();
 
   // Turn telemetry: armed in beforeTurn, fed by the step and tool hooks,
@@ -192,7 +203,9 @@ export class SamChatAgent extends Think {
   }
 
   private buildModel(reasoningEffort: "max" | "low") {
-    const apiKey = getEnvValueSync(this.env, "OPENROUTER_API_KEY");
+    const apiKey =
+      this.workspaceOpenRouterKey ??
+      getEnvValueSync(this.env, "OPENROUTER_API_KEY");
     if (!apiKey) {
       throw new Error("OPENROUTER_API_KEY is required for the SAM agent");
     }
@@ -328,8 +341,17 @@ export class SamChatAgent extends Think {
       // confirmed against a second Autumn read path before refusing — a
       // stale check reading here once locked a paying customer out of chat.
       const { organizationId } = ctx.project;
-      const hosted = await isHostedBillingEnabled();
-      if (hosted) {
+      const hosted = await isHostedServerAuthMode();
+      if (await isByokServerMode()) {
+        this.workspaceOpenRouterKey = await getOpenRouterApiKey(
+          organizationId,
+        ).catch(() => null);
+        if (!this.workspaceOpenRouterKey) {
+          turn.refusal = "no_key";
+          return this.refusalTurn("Add your OpenRouter API key in Settings.");
+        }
+      }
+      if (await isHostedBillingEnabled()) {
         const { depleted, monthlyRemaining } = await checkUsageCreditsDepleted({
           userId: ctx.row.userId,
           userEmail: ctx.userEmail,

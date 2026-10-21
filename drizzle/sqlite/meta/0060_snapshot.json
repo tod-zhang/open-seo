@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "8f340dc4-671f-43ba-a330-ed73a6b68c56",
+  "id": "57ea0583-e280-4e2c-b078-437e5a1743cb",
   "prevId": "f0ac6b52-7ab6-4917-9b76-b5588103339b",
   "tables": {
     "backlink_snapshots": {
@@ -4881,25 +4881,32 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "dataforseo_credentials": {
-      "name": "dataforseo_credentials",
+    "workspace_api_keys": {
+      "name": "workspace_api_keys",
       "columns": {
         "organization_id": {
           "name": "organization_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "login": {
-          "name": "login",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "encrypted_api_key": {
-          "name": "encrypted_api_key",
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "encrypted_key": {
+          "name": "encrypted_key",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -4931,9 +4938,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "dataforseo_credentials_organization_id_organization_id_fk": {
-          "name": "dataforseo_credentials_organization_id_organization_id_fk",
-          "tableFrom": "dataforseo_credentials",
+        "workspace_api_keys_organization_id_organization_id_fk": {
+          "name": "workspace_api_keys_organization_id_organization_id_fk",
+          "tableFrom": "workspace_api_keys",
           "tableTo": "organization",
           "columnsFrom": [
             "organization_id"
@@ -4945,7 +4952,15 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "workspace_api_keys_organization_id_provider_pk": {
+          "columns": [
+            "organization_id",
+            "provider"
+          ],
+          "name": "workspace_api_keys_organization_id_provider_pk"
+        }
+      },
       "uniqueConstraints": {},
       "checkConstraints": {}
     }

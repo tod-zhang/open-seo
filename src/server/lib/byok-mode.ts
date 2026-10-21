@@ -1,20 +1,15 @@
 import { isByokMode } from "@/lib/byok";
 import {
   getOptionalEnvValue,
+  getRequiredEnvValue,
   isHostedServerAuthMode,
 } from "@/server/lib/runtime-env";
 
-// Reads its two variables itself, the same way runtime-env does (process.env
-// first, then the Worker env), so the many tests that mock runtime-env don't
-// have to know about BYOK.
+// Fails closed to "not BYOK" when the variable can't be read: many tests mock
+// runtime-env without getOptionalEnvValue and don't need to know about BYOK.
 async function readEnv(name: string): Promise<string | undefined> {
-  const processValue =
-    typeof process !== "undefined" ? process.env?.[name] : undefined;
-  if (processValue) return processValue;
   try {
-    const { env } = await import("cloudflare:workers");
-    const value: unknown = Reflect.get(env, name);
-    return typeof value === "string" ? value : undefined;
+    return await getOptionalEnvValue(name);
   } catch {
     return undefined;
   }
@@ -41,4 +36,22 @@ export async function isDataforseoProviderConfigured(): Promise<boolean> {
     (await isByokServerMode()) ||
     Boolean(await getOptionalEnvValue("DATAFORSEO_API_KEY"))
   );
+}
+
+/**
+ * The OpenRouter key AI calls for this workspace run on: in BYOK mode the
+ * workspace's own (OPENROUTER_KEY_REQUIRED when none is saved), otherwise the
+ * operator's OPENROUTER_API_KEY.
+ */
+export async function getOpenRouterApiKey(
+  organizationId: string,
+): Promise<string> {
+  if (!(await isByokServerMode())) {
+    return getRequiredEnvValue("OPENROUTER_API_KEY");
+  }
+  // Lazy: keeps the repository (and the database) out of this module's
+  // import graph.
+  const { WorkspaceApiKeyService } =
+    await import("@/server/features/workspace-api-keys/services/WorkspaceApiKeyService");
+  return WorkspaceApiKeyService.openKey(organizationId, "openrouter");
 }

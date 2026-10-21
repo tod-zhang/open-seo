@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ApiKeySettings } from "@/client/features/settings/ApiKeySettings";
-import { DataforseoKeySettings } from "@/client/features/settings/DataforseoKeySettings";
+import { WorkspaceApiKeySettings } from "@/client/features/settings/WorkspaceApiKeySettings";
 import { SectionHeader } from "@/client/components/PageHeader";
 import { ThemePreferenceRadio } from "@/client/components/ThemePreferenceMenuItems";
 import { PrivacySettings } from "@/client/features/settings/PrivacySettings";
@@ -26,7 +26,7 @@ function PersonalSettings() {
 
       {isHosted ? (
         <>
-          {isByokClientMode() ? <DataforseoKeySettings /> : null}
+          {isByokClientMode() ? <WorkspaceApiKeySettings /> : null}
 
           <ApiKeySettings />
 

@@ -11,7 +11,7 @@ import * as sqliteGa4 from "./ga4.schema";
 import * as sqliteGsc from "./gsc.schema";
 import * as sqliteTelemetry from "./telemetry.schema";
 import * as sqliteAiVisibility from "./ai-visibility.schema";
-import * as sqliteDataforseoCredentials from "./dataforseo-credentials.schema";
+import * as sqliteWorkspaceApiKeys from "./workspace-api-keys.schema";
 import * as pgApp from "./pg/app.schema";
 import * as pgProjectContext from "./pg/project-context.schema";
 import * as pgReports from "./pg/reports.schema";
@@ -24,7 +24,7 @@ import * as pgGa4 from "./pg/ga4.schema";
 import * as pgGsc from "./pg/gsc.schema";
 import * as pgTelemetry from "./pg/telemetry.schema";
 import * as pgAiVisibility from "./pg/ai-visibility.schema";
-import * as pgDataforseoCredentials from "./pg/dataforseo-credentials.schema";
+import * as pgWorkspaceApiKeys from "./pg/workspace-api-keys.schema";
 
 // Canonical schema barrel. Repositories import their tables from here and the
 // provider-aware `db` from "@/db", so each repository is written ONCE for both
@@ -48,7 +48,7 @@ type AppSchema = typeof sqliteApp &
   typeof sqliteGsc &
   typeof sqliteTelemetry &
   typeof sqliteAiVisibility &
-  typeof sqliteDataforseoCredentials;
+  typeof sqliteWorkspaceApiKeys;
 
 const runtimeSchema =
   getDatabaseProvider() === "postgres"
@@ -65,7 +65,7 @@ const runtimeSchema =
         ...pgGsc,
         ...pgTelemetry,
         ...pgAiVisibility,
-        ...pgDataforseoCredentials,
+        ...pgWorkspaceApiKeys,
       }
     : {
         ...sqliteApp,
@@ -80,7 +80,7 @@ const runtimeSchema =
         ...sqliteGsc,
         ...sqliteTelemetry,
         ...sqliteAiVisibility,
-        ...sqliteDataforseoCredentials,
+        ...sqliteWorkspaceApiKeys,
       };
 
 // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- guarded by schema-parity.test.ts
@@ -132,5 +132,5 @@ export const {
   aiObservations,
   aiSources,
   aiMatches,
-  dataforseoCredentials,
+  workspaceApiKeys,
 } = schema;

@@ -1,5 +1,5 @@
 {
-  "id": "46f9cb1b-7cdf-4a7b-836f-88d410f0c735",
+  "id": "5b5573cd-e4df-4bcd-b579-01b948465133",
   "prevId": "a2811087-9d43-412c-ac54-3a079a463e02",
   "version": "7",
   "dialect": "postgresql",
@@ -5378,24 +5378,30 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.dataforseo_credentials": {
-      "name": "dataforseo_credentials",
+    "public.workspace_api_keys": {
+      "name": "workspace_api_keys",
       "schema": "",
       "columns": {
         "organization_id": {
           "name": "organization_id",
           "type": "text",
-          "primaryKey": true,
+          "primaryKey": false,
           "notNull": true
         },
-        "login": {
-          "name": "login",
+        "provider": {
+          "name": "provider",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "encrypted_api_key": {
-          "name": "encrypted_api_key",
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "encrypted_key": {
+          "name": "encrypted_key",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -5423,9 +5429,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "dataforseo_credentials_organization_id_organization_id_fk": {
-          "name": "dataforseo_credentials_organization_id_organization_id_fk",
-          "tableFrom": "dataforseo_credentials",
+        "workspace_api_keys_organization_id_organization_id_fk": {
+          "name": "workspace_api_keys_organization_id_organization_id_fk",
+          "tableFrom": "workspace_api_keys",
           "tableTo": "organization",
           "columnsFrom": [
             "organization_id"
@@ -5437,7 +5443,15 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "workspace_api_keys_organization_id_provider_pk": {
+          "name": "workspace_api_keys_organization_id_provider_pk",
+          "columns": [
+            "organization_id",
+            "provider"
+          ]
+        }
+      },
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},

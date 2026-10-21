@@ -43,6 +43,8 @@ const STANDARD_MESSAGES: Record<ErrorCode, string> = {
     : "DataForSEO rejected the API key. Check that DATAFORSEO_API_KEY is the base64 of your DataForSEO login:password.",
   DATAFORSEO_KEY_REQUIRED:
     "Add your DataForSEO API key in Settings to use this feature.",
+  OPENROUTER_KEY_REQUIRED:
+    "Add your OpenRouter API key in Settings to use AI features.",
   RATE_LIMITED: "Too many requests. Please wait and try again.",
   UPSTREAM_UNAVAILABLE:
     "The data provider is temporarily unavailable. Please retry in a moment.",

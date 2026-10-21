@@ -34,8 +34,8 @@ export async function withOrganizationDataforseoKey<T>(
   return runWithDataforseoApiKey(async () => {
     // Lazy: keeps the repository (and the database) out of this module's
     // import graph, which every DataForSEO caller shares.
-    const { DataforseoKeyService } =
-      await import("@/server/features/dataforseo-key/services/DataforseoKeyService");
-    return DataforseoKeyService.openOrganizationKey(organizationId);
+    const { WorkspaceApiKeyService } =
+      await import("@/server/features/workspace-api-keys/services/WorkspaceApiKeyService");
+    return WorkspaceApiKeyService.openKey(organizationId, "dataforseo");
   }, fn);
 }

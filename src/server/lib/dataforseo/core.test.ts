@@ -2,12 +2,13 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/server/lib/runtime-env", () => ({
   getRequiredEnvValue: vi.fn(async () => "encoded-credentials"),
+  getOptionalEnvValue: vi.fn(async (name: string) => process.env[name]),
 }));
 vi.mock(
-  "@/server/features/dataforseo-key/services/DataforseoKeyService",
+  "@/server/features/workspace-api-keys/services/WorkspaceApiKeyService",
   () => ({
-    DataforseoKeyService: {
-      openOrganizationKey: vi.fn(async () => "workspace-credentials"),
+    WorkspaceApiKeyService: {
+      openKey: vi.fn(async () => "workspace-credentials"),
     },
   }),
 );

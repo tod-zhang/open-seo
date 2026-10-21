@@ -10,11 +10,11 @@ import {
 import { billResearchSpend } from "@/server/billing/researchSpend";
 import { requireOpenRouterCostUsd } from "@/server/lib/chatAgent";
 import { buildChatAgentModel } from "@/server/lib/openrouter";
+import { getOptionalEnvValue } from "@/server/lib/runtime-env";
 import {
-  getOptionalEnvValue,
-  getRequiredEnvValue,
-} from "@/server/lib/runtime-env";
-import { isHostedBillingEnabled } from "@/server/lib/byok-mode";
+  getOpenRouterApiKey,
+  isHostedBillingEnabled,
+} from "@/server/lib/byok-mode";
 import { AppError } from "@/server/lib/errors";
 import { z } from "zod";
 import { normalizeAiSuggestion } from "@/shared/ai-prompt-suggestions";
@@ -74,7 +74,7 @@ export async function generateAiPrompts(
     : suggestedAiTopicSchema;
   const result = await generateText({
     model: buildChatAgentModel(
-      await getRequiredEnvValue("OPENROUTER_API_KEY"),
+      await getOpenRouterApiKey(customer.organizationId),
       await getOptionalEnvValue("OPENROUTER_MODEL"),
       "low",
     ),
