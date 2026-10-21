@@ -92,4 +92,30 @@ describe("beginRankCheckRun", () => {
     expect(create).not.toHaveBeenCalled();
     expect(mocks.tryCreateRun).toHaveBeenCalledTimes(1);
   });
+
+  // A Docker restart can leave the workflow reporting an active status for a
+  // run that will never finish; it must not block checks forever.
+  it("replaces a run that is still active after the maximum runtime", async () => {
+    mocks.tryCreateRun.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+    mocks.getActiveRunForConfig.mockResolvedValue({
+      id: "run_0",
+      status: "running" as const,
+      startedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+    });
+    mocks.getWorkflow.mockResolvedValue({
+      status: vi.fn().mockResolvedValue({ status: "running" }),
+    });
+    const create = vi.fn().mockResolvedValue(undefined);
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- only create is exercised by this unit test
+    const workflow = { create } as unknown as Env["RANK_CHECK_WORKFLOW"];
+
+    const result = await beginRankCheckRun({ ...input, workflow });
+
+    expect(result.ok).toBe(true);
+    expect(mocks.updateRun).toHaveBeenCalledWith(
+      "run_0",
+      expect.objectContaining({ status: "failed" }),
+    );
+    expect(create).toHaveBeenCalledTimes(1);
+  });
 });
