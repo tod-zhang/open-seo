@@ -63,6 +63,22 @@ describe("DataForSEO transport", () => {
     },
   );
 
+  // A workspace's unverified or empty DataForSEO account must tell the user
+  // what to fix instead of showing an anonymous internal error.
+  it.each([
+    [402, "DATAFORSEO_BALANCE_LOW"],
+    [403, "DATAFORSEO_ACCOUNT_UNVERIFIED"],
+  ])("maps HTTP %i to %s", async (status, code) => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<typeof fetch>().mockResolvedValue(new Response("", { status })),
+    );
+
+    await expect(
+      dataforseoPost("/v3/dataforseo_labs/google/keyword_ideas/live", []),
+    ).rejects.toMatchObject({ code });
+  });
+
   describe("in BYOK mode", () => {
     function stubByok() {
       vi.stubEnv("AUTH_MODE", "hosted");
