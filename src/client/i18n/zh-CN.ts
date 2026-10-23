@@ -2152,6 +2152,10 @@ export const messages: Record<string, string> = {
     "DataForSEO 拒绝了你的 API 密钥。请在设置中更新。",
   "DataForSEO rejected the API key. Check that DATAFORSEO_API_KEY is the base64 of your DataForSEO login:password.":
     "DataForSEO 拒绝了 API 密钥。请确认 DATAFORSEO_API_KEY 是你 DataForSEO login:password 的 base64 编码。",
+  "DataForSEO hasn't verified this account yet. Sign in at app.dataforseo.com and finish account verification, then try again.":
+    "DataForSEO 尚未验证此账户。请登录 app.dataforseo.com 完成账户验证后重试。",
+  "The DataForSEO account balance is too low. Top it up at app.dataforseo.com, then try again.":
+    "DataForSEO 账户余额不足。请在 app.dataforseo.com 充值后重试。",
   "Add your DataForSEO API key in Settings to use this feature.":
     "请在设置中添加 DataForSEO API 密钥以使用此功能。",
   "Add your DeepSeek API key in Settings to use AI features.":

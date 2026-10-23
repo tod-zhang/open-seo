@@ -142,7 +142,11 @@ function createAuthenticatedFetch(
             ? "RATE_LIMITED"
             : response.status === 401
               ? "DATAFORSEO_AUTH_FAILED"
-              : "INTERNAL_ERROR";
+              : response.status === 402
+                ? "DATAFORSEO_BALANCE_LOW"
+                : response.status === 403
+                  ? "DATAFORSEO_ACCOUNT_UNVERIFIED"
+                  : "INTERNAL_ERROR";
       const error = new AppError(
         code,
         `DataForSEO HTTP ${response.status} on ${path}`,
@@ -158,7 +162,11 @@ function createAuthenticatedFetch(
       // what they capture, so warn here to keep the provider's failure rate
       // visible in Workers Observability. Warn, not error: there is nothing in
       // the app to fix.
-      if (code === "UPSTREAM_UNAVAILABLE")
+      if (
+        code === "UPSTREAM_UNAVAILABLE" ||
+        code === "DATAFORSEO_BALANCE_LOW" ||
+        code === "DATAFORSEO_ACCOUNT_UNVERIFIED"
+      )
         console.warn("dataforseo.upstream-http-failed", {
           event: "dataforseo.upstream-http-failed",
           path,

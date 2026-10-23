@@ -19,6 +19,8 @@ const ERROR_CODES = [
   "AI_VISIBILITY_ERROR",
   "DATAFORSEO_AUTH_FAILED",
   "DATAFORSEO_KEY_REQUIRED",
+  "DATAFORSEO_ACCOUNT_UNVERIFIED",
+  "DATAFORSEO_BALANCE_LOW",
   "OPENROUTER_KEY_REQUIRED",
   "RATE_LIMITED",
   "UPSTREAM_UNAVAILABLE",
@@ -46,6 +48,9 @@ const NON_REPORTABLE_ERROR_CODES = new Set<ErrorCode>([
   "AUDIT_ALREADY_RUNNING",
   "AUDIT_RENDERING_UNAVAILABLE",
   "DATAFORSEO_KEY_REQUIRED",
+  // The workspace's own DataForSEO account needs verifying or topping up.
+  "DATAFORSEO_ACCOUNT_UNVERIFIED",
+  "DATAFORSEO_BALANCE_LOW",
   "OPENROUTER_KEY_REQUIRED",
   // An external provider (DataForSEO) failing on its own side. Nothing in the
   // app to fix, and it drowned real exceptions. Note the error handlers only
